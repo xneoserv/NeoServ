@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="(https://github.com/xneoserv/NeoServ/blob/main/src/admin/assets/images/logo_x_neoserv.png)" width="220" alt="NeoServ Logo"/>
+  <img src="(https://github.com/xneoserv/NeoServ/blob/4aaec677ee7ef04040227de5476868344b07ea03/src/admin/assets/images/logo_x_neoserv.png))" width="220" alt="NeoServ Logo"/>
 </p>
 
 <h1 align="center">NeoServ IPTV Panel</h1>
