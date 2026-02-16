@@ -106,8 +106,12 @@ sudo apt update && sudo apt full-upgrade -y
 # 2. Install dependencies
 sudo apt install -y python3-pip unzip
 
-# 3. Download and install NeoServ
-# (Installation script will be updated)
+# 3. Download latest release
+latest_version=$(curl -s https://api.github.com/repos/xneoserv/NeoServ/releases/latest | grep '"tag_name":' | cut -d '"' -f 4)
+wget "https://github.com/xneoserv/NeoServ/releases/download/${latest_version}/NeoServ.zip"
+
+# 4. Unpack and install
+unzip NeoServ.zip
 sudo python3 install
 ```
 
