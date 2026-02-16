@@ -2,8 +2,8 @@
 import requests
 import re
 
-REPO = "Vateron-Media/XC_VM"   # ❗ Укажи свой репозиторий (org/repo)
-TOKEN = ""  # Можно оставить пустым, но с токеном больше лимиты
+REPO = "xneoserv/NeoServ"   # ❗ Your repository (org/repo)
+TOKEN = ""  # Can be left empty, but token gives higher limits
 
 HEADERS = {"Accept": "application/vnd.github+json"}
 if TOKEN:
