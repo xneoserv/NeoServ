@@ -1,17 +1,17 @@
 <p align="center">
-  <img src="https://avatars.githubusercontent.com/u/149707645?s=400&v=4" width="220" alt="Vateron Media Logo"/>
+  <img src="https://avatars.githubusercontent.com/u/149707645?s=400&v=4" width="220" alt="NeoServ Logo"/>
 </p>
 
-<h1 align="center">XC_VM IPTV Panel</h1>
+<h1 align="center">NeoServ IPTV Panel</h1>
 <p align="center">
   <b>Open-source, community-driven Xtream Codes panel</b><br>
   Built for modern IPTV workflows – powerful, scalable, and free.
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/Vateron-Media/XC_VM" /></a>
-  <a href="https://github.com/Vateron-Media/XC_VM/stargazers"><img src="https://img.shields.io/github/stars/Vateron-Media/XC_VM?style=flat" /></a>
-  <a href="https://github.com/Vateron-Media/XC_VM/issues"><img src="https://img.shields.io/github/issues/Vateron-Media/XC_VM" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/xneoserv/NeoServ" /></a>
+  <a href="https://github.com/xneoserv/NeoServ/stargazers"><img src="https://img.shields.io/github/stars/xneoserv/NeoServ?style=flat" /></a>
+  <a href="https://github.com/xneoserv/NeoServ/issues"><img src="https://img.shields.io/github/issues/xneoserv/NeoServ" /></a>
 </p>
 
 ---
@@ -23,7 +23,6 @@
 
 * 🏁 [Overview](#-overview)
 * ⚠️ [Status](#️-status)
-* 📚 [Documentation](#-documentation)
 * 🧱 [Technology Stack](#-technology-stack)
 * 🧩 [Ubuntu Support](#-supported-ubuntu-versions)
 * 📥 [Quick Install](#-quick-install)
@@ -38,12 +37,11 @@
 
 </details>
 
-
 ---
 
 ## 🚀 Overview
 
-**XC_VM** is an open-source IPTV platform based on Xtream Codes.
+**NeoServ** is an open-source IPTV platform based on Xtream Codes.
 It enables:
 
 * 📺 Live & VOD streaming
@@ -62,16 +60,6 @@ It enables:
 
 ---
 
-## 📚 Documentation
-
-* 🇬🇧 **English Guide**
-  [https://vateron-media.github.io/XC_VM_Docs/#/en-us/](https://vateron-media.github.io/XC_VM_Docs/#/en-us/)
-
-* 🇷🇺 **Руководство на русском**
-  [https://vateron-media.github.io/XC_VM_Docs/#/ru-ru/](https://vateron-media.github.io/XC_VM_Docs/#/ru-ru/)
-
----
-
 ## 🧱 Technology Stack
 
 | Component | Version    | Description                     |
@@ -87,12 +75,10 @@ It enables:
 
 ## 🐧 Supported Ubuntu Versions
 
-XC_VM **officially supports** the following Ubuntu LTS and interim releases:
+NeoServ **officially supports** the following Ubuntu LTS and interim releases:
 
 | Ubuntu Version | Codename        | Status                |
 | -------------- | --------------- | --------------------- |
-| **20.04**      | Focal Fossa     | ⚠️ *Outdated*         |
-| **20.10**      | Groovy Gorilla  | ⚠️ *Outdated*         |
 | **22.04**      | Jammy Jellyfish | ✅ **Fully Supported** |
 | **22.10**      | Kinetic Kudu    | ⚙️ *Compatible*       |
 | **24.04**      | Noble Numbat    | ✅ **Fully Supported** |
@@ -107,18 +93,6 @@ For new installations, the **strongly recommended** Ubuntu versions are:
 * 🟢 **Ubuntu 22.04 LTS**
 * 🟢 **Ubuntu 24.04 LTS**
 
-These versions receive full support, active security updates, and provide the stability required for XC_VM.
-
----
-
-### ⚠️ Important Note About Ubuntu 20.x
-
-Ubuntu 20.04 and 20.10 are **outdated** and no longer receive updates for most essential system packages.
-Using these versions is still *possible*, but:
-
-* 🛠️ **Official support is discontinued** — any issues must be resolved by the user.
-* 🚫 Bugs caused by outdated dependencies or libraries **will not be addressed** by the XC_VM project.
-
 ---
 
 ## 📥 Quick Install
@@ -132,12 +106,8 @@ sudo apt update && sudo apt full-upgrade -y
 # 2. Install dependencies
 sudo apt install -y python3-pip unzip
 
-# 3. Download latest release
-latest_version=$(curl -s https://api.github.com/repos/Vateron-Media/XC_VM/releases/latest | grep '"tag_name":' | cut -d '"' -f 4)
-wget "https://github.com/Vateron-Media/XC_VM/releases/download/${latest_version}/XC_VM.zip"
-
-# 4. Unpack and install
-unzip XC_VM.zip
+# 3. Download and install NeoServ
+# (Installation script will be updated)
 sudo python3 install
 ```
 
@@ -146,12 +116,12 @@ sudo python3 install
 ## 🧰 Service Management
 
 ```bash
-sudo systemctl start xc_vm     # Start
-sudo systemctl stop xc_vm      # Stop
-sudo systemctl restart xc_vm   # Restart
-sudo systemctl status xc_vm    # Status
-sudo /home/xc_vm/bin/nginx/sbin/nginx -s reload    # Reload Nginx config
-journalctl -u xc_vm -f         # Live logs
+sudo systemctl start neoserv     # Start
+sudo systemctl stop neoserv      # Stop
+sudo systemctl restart neoserv   # Restart
+sudo systemctl status neoserv    # Status
+sudo /home/neoserv/bin/nginx/sbin/nginx -s reload    # Reload Nginx config
+journalctl -u neoserv -f         # Live logs
 ```
 
 ---
