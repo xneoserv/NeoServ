@@ -714,7 +714,7 @@ if ($rUserInfo) {
 			}
 
 			$output['server_info'] = [
-				'version' => XC_VM_VERSION,
+				'version' => NeoServ_VERSION,
 				'url' => $rDomain,
 				'port' => strval(StreamingUtilities::$rServers[SERVER_ID]['http_broadcast_port']),
 				'https_port' => strval(StreamingUtilities::$rServers[SERVER_ID]['https_broadcast_port']),
