@@ -156,10 +156,10 @@ if ($rExtension) {
 	$rPrebuffer = isset(StreamingUtilities::$rRequest['prebuffer']);
 
 	foreach (getallheaders() as $rKey => $rValue) {
-		if (strtoupper($rKey) == 'X-XC_VM-DETECT') {
+		if (strtoupper($rKey) == 'X-NeoServ-DETECT') {
 			$rRestreamDetect = true;
 		} else {
-			if (strtoupper($rKey) == 'X-XC_VM-PREBUFFER') {
+			if (strtoupper($rKey) == 'X-NeoServ-PREBUFFER') {
 				$rPrebuffer = true;
 			}
 		}
