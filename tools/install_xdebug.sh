@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PHP_PREFIX="/home/xc_vm/bin/php"
+PHP_PREFIX="/home/neoserv/bin/php"
 PHP_BIN="$PHP_PREFIX/bin/php"
 PHPIZE="$PHP_PREFIX/bin/phpize"
 PHP_CONFIG="$PHP_PREFIX/bin/php-config"
@@ -13,14 +13,14 @@ XDEBUG_REPO="https://github.com/xdebug/xdebug.git"
 TMP_DIR="/tmp/php-xdebug-build"
 
 # ====================
-# Установка зависимостей (Ubuntu/Debian)
+# Install dependencies (Ubuntu/Debian)
 # ====================
-echo "=== Обновление списка пакетов и установка зависимостей ==="
+echo "=== Updating package list and installing dependencies ==="
 
-# Обновляем индекс пакетов
+# Update package index
 sudo apt update -qq
 
-# Основной набор для сборки PHP-расширений + git
+# Core set for building PHP extensions + git
 sudo apt install -y --no-install-recommends \
     build-essential \
     autoconf \
@@ -30,16 +30,16 @@ sudo apt install -y --no-install-recommends \
     pkg-config
 # ====================
 
-echo "=== Проверка окружения ==="
+echo "=== Environment check ==="
 for bin in "$PHP_BIN" "$PHPIZE" "$PHP_CONFIG"; do
     if [ ! -x "$bin" ]; then
-        echo "Ошибка: $bin не найден"
+        echo "Error: $bin not found"
         exit 1
     fi
 done
 
 if [ ! -f "$PHP_INI" ]; then
-    echo "Ошибка: Основной php.ini не найден по пути $PHP_INI"
+    echo "Error: Main php.ini not found at $PHP_INI"
     exit 1
 fi
 
@@ -48,7 +48,7 @@ echo "php.ini        : $PHP_INI"
 echo "Extension dir  : $EXT_DIR"
 
 echo
-echo "=== Подготовка сборки Xdebug ==="
+echo "=== Preparing Xdebug build ==="
 rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR"
 cd "$TMP_DIR"
@@ -58,79 +58,79 @@ $PHPIZE
 ./configure --with-php-config="$PHP_CONFIG"
 
 echo
-echo "=== Сборка ==="
+echo "=== Building ==="
 make -j$(nproc)
 
 echo
-echo "=== Установка расширения ==="
+echo "=== Installing extension ==="
 cp modules/xdebug.so "$EXT_DIR"/
 
 echo
-echo "=== Добавление настроек в $PHP_INI ==="
+echo "=== Adding settings to $PHP_INI ==="
 
-# Проверяем, не добавляли ли уже секцию Xdebug
+# Check if Xdebug section already exists
 if grep -q "^;.*Xdebug" "$PHP_INI" || grep -q "^zend_extension=.*xdebug.so" "$PHP_INI"; then
-    echo "Внимание: похоже, Xdebug уже присутствует в php.ini"
-    echo "Новые настройки добавляться НЕ будут, чтобы избежать дублирования."
+    echo "Warning: Xdebug appears to already be present in php.ini"
+    echo "New settings will NOT be added to avoid duplication."
 else
     cat >> "$PHP_INI" <<EOF
 
 
 ; ====================
-; Xdebug (добавлено $(date '+%Y-%m-%d %H:%M:%S'))
+; Xdebug (added $(date '+%Y-%m-%d %H:%M:%S'))
 ; ====================
 zend_extension=xdebug.so
 
-; Включаем отладку и профайлинг
+; Enable debugging and profiling
 xdebug.mode=debug,profile
 xdebug.start_with_request=trigger
-xdebug.output_dir=/home/xc_vm/xdebug
+xdebug.output_dir=/home/neoserv/xdebug
 xdebug.client_host=127.0.0.1
 xdebug.client_port=9003
 xdebug.discover_client_host=0
 
-; Прочие настройки (по желанию)
+; Other settings (optional)
 ; xdebug.log=/tmp/xdebug.log
 ; xdebug.profiler_enable=1
 ; xdebug.profiler_output_name=cachegrind.out.%p
 ; ====================
 EOF
 
-    echo "Настройки Xdebug успешно добавлены в конец файла $PHP_INI"
+    echo "Xdebug settings successfully added to end of $PHP_INI"
 fi
 
-sudo chown xc_vm:xc_vm -R /home/xc_vm >/dev/null 2>&1
+sudo chown neoserv:neoserv -R /home/neoserv >/dev/null 2>&1
 sudo chmod 777 "$EXT_DIR/xdebug.so" >/dev/null 2>&1
 
 echo
-echo "=== Перезапуск php-fpm ==="
+echo "=== Restarting php-fpm ==="
 if systemctl is-active --quiet php-fpm; then
     sudo systemctl restart php-fpm
 else
-    echo "php-fpm не обнаружен в systemd, перезапустите вручную"
+    echo "php-fpm not found in systemd, restart manually"
 fi
 sleep 2
 
 echo
-echo "=== Проверка загрузки модуля ==="
+echo "=== Checking module load ==="
 if $PHP_BIN -r 'exit(extension_loaded("xdebug") ? 0 : 1);'; then
-    echo "Xdebug успешно загружен (проверено через extension_loaded)"
+    echo "Xdebug successfully loaded (verified via extension_loaded)"
 else
-    echo "Ошибка: Xdebug не загрузился"
-    echo "Проверьте php -r 'var_dump(extension_loaded(\"xdebug\"));'"
+    echo "Error: Xdebug failed to load"
+    echo "Check: php -r 'var_dump(extension_loaded(\"xdebug\"));'"
     exit 1
 fi
 
 echo
 echo "=============================="
-echo "Xdebug установлен успешно"
+echo "Xdebug installed successfully"
 echo
-echo "📂 Папка профилей: /tmp/xdebug"
-echo "Для php-fpm не забудь перезапуск:"
-echo "  systemctl restart php-fpm      # если systemd"
-echo "  или"
+echo "📂 Profile folder: /home/neoserv/xdebug"
+echo "For php-fpm don't forget to restart:"
+echo "  systemctl restart php-fpm      # if systemd"
+echo "  or"
 echo "  $PHP_PREFIX/sbin/php-fpm --reload"
-echo "  или"
+echo "  or"
 echo "  pkill -USR2 php-fpm"
 echo
 echo "=============================="
