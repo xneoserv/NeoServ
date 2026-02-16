@@ -1,4 +1,4 @@
-#!/home/xc_vm/bin/php/bin/php
+#!/home/neoserv/bin/php/bin/php
 <?php
 
 if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
@@ -21,9 +21,9 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 			echo "\n" . 'Status' . "\n" . '------------------------------' . "\n";
 
 			if (isrunning()) {
-				echo 'XC_VM is running.' . "\n\n";
+				echo 'NeoServ is running.' . "\n\n";
 			} else {
-				echo 'XC_VM is not running.' . "\n\n";
+				echo 'NeoServ is not running.' . "\n\n";
 			}
 		} else {
 			echo "\n";
@@ -84,7 +84,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 		shell_exec('sudo chmod 0660 ' . MAIN_HOME . 'bin/php/sockets/*');
 		shell_exec('sudo chmod 0771 ' . MAIN_HOME . 'bin/daemons.sh');
 		shell_exec('sudo chmod 0775 ' . MAIN_HOME . 'bin/certbot');
-		shell_exec('sudo chown -R xc_vm:xc_vm ' . MAIN_HOME . 'config');
+		shell_exec('sudo chown -R neoserv:neoserv ' . MAIN_HOME . 'config');
 		shell_exec("sudo echo 'net.ipv4.ip_unprivileged_port_start=0' > /etc/sysctl.d/50-allports-nonroot.conf && sudo sysctl --system 2> /dev/null");
 		$rSSLConfig = file_get_contents(MAIN_HOME . 'bin/nginx/conf/ssl.conf');
 
@@ -103,18 +103,18 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 		}
 
 		if ($rReload) {
-			exec('sudo -u xc_vm ' . MAIN_HOME . 'bin/nginx/sbin/nginx -s reload');
-			exec('sudo service xc_vm restart');
+			exec('sudo -u neoserv ' . MAIN_HOME . 'bin/nginx/sbin/nginx -s reload');
+			exec('sudo service neoserv restart');
 		}
 
 		$rCrons = array();
 
 		if (file_exists(CRON_PATH . 'root_signals.php')) {
-			$rCrons[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_signals.php # XC_VM';
+			$rCrons[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_signals.php # NeoServ';
 		}
 
 		if (file_exists(CRON_PATH . 'root_mysql.php')) {
-			$rCrons[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_mysql.php # XC_VM';
+			$rCrons[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_mysql.php # NeoServ';
 		}
 
 		$rWrite = false;
@@ -171,9 +171,9 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 			}
 		}
 
-		if (!file_exists('/etc/init.d/xc_vm')) {
+		if (!file_exists('/etc/init.d/neoserv')) {
 		} else {
-			unlink('/etc/init.d/xc_vm');
+			unlink('/etc/init.d/neoserv');
 			shell_exec('sudo systemctl daemon-reload');
 		}
 
@@ -238,10 +238,10 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 		if (!$rFirstRun && $rServers[SERVER_ID]['is_main']) {
 			StreamingUtilities::$db->query('UPDATE `servers` SET `is_main` = 0 WHERE `id` <> ?;', SERVER_ID);
 			StreamingUtilities::$db->query('UPDATE `servers` SET `is_main` = 1 WHERE `id` = ?;', SERVER_ID);
-			StreamingUtilities::$db->query('UPDATE `settings` SET `status_uuid` = ?;', md5(XC_VM_VERSION));
+			StreamingUtilities::$db->query('UPDATE `settings` SET `status_uuid` = ?;', md5(NeoServ_VERSION));
 
 			if (stripos(StreamingUtilities::$rSettings['server_name'], 'xtream') !== false || stripos(StreamingUtilities::$rSettings['server_name'], 'zapx') !== false || stripos(StreamingUtilities::$rSettings['server_name'], 'streamcreed') !== false) {
-				StreamingUtilities::$db->query("UPDATE `settings` SET `server_name` = 'XC_VM';");
+				StreamingUtilities::$db->query("UPDATE `settings` SET `server_name` = 'NeoServ';");
 			}
 
 			StreamingUtilities::$db->query('SELECT * FROM `access_codes` WHERE `enabled` = 1 AND `type` = 0;');
@@ -284,19 +284,19 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 			}
 
 			if ($rOffline == 0) {
-				echo 'All servers are Online and reporting back to XC_VM!' . "\n\n";
+				echo 'All servers are Online and reporting back to NeoServ!' . "\n\n";
 			} else {
 				echo "\n";
 			}
 
-			echo 'Installed Version: ' . $rServers[SERVER_ID]['xc_vm_version'] . "\n" . '------------------------------' . "\n";
+			echo 'Installed Version: ' . $rServers[SERVER_ID]['neoserv_version'] . "\n" . '------------------------------' . "\n";
 			$Df0cfbe079756478 = 0;
 
 			foreach ($rServers as $rServerID => $rServer) {
 				if ($rServerID != SERVER_ID) {
-					if (!($rServer['server_type'] == 0 && $rServer['xc_vm_version'] && $rServer['xc_vm_version'] != $rServers[SERVER_ID]['xc_vm_version'])) {
+					if (!($rServer['server_type'] == 0 && $rServer['neoserv_version'] && $rServer['neoserv_version'] != $rServers[SERVER_ID]['neoserv_version'])) {
 					} else {
-						echo 'Server #' . $rServerID . ' - ' . $rServer['server_ip'] . ' - Running v' . $rServer['xc_vm_version'] . "\n";
+						echo 'Server #' . $rServerID . ' - ' . $rServer['server_ip'] . ' - Running v' . $rServer['neoserv_version'] . "\n";
 						$Df0cfbe079756478++;
 					}
 				}
@@ -309,7 +309,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 			}
 		}
 
-		StreamingUtilities::$db->query('UPDATE `servers` SET `xc_vm_version` = ? WHERE `id` = ?;', XC_VM_VERSION, SERVER_ID);
+		StreamingUtilities::$db->query('UPDATE `servers` SET `neoserv_version` = ? WHERE `id` = ?;', NeoServ_VERSION, SERVER_ID);
 	} else {
 		exit(0);
 	}
@@ -319,7 +319,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 
 function isrunning() {
 	$rNginx = 0;
-	exec('ps -fp $(pgrep -u xc_vm 2>/dev/null) 2>/dev/null', $rOutput, $rReturnVar);
+	exec('ps -fp $(pgrep -u neoserv 2>/dev/null) 2>/dev/null', $rOutput, $rReturnVar);
 
 	foreach ($rOutput as $rProcess) {
 		$rSplit = explode(' ', preg_replace('!\\s+!', ' ', trim($rProcess)));
