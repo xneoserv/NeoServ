@@ -1,4 +1,4 @@
-#!/home/xc_vm/bin/php/bin/php
+#!/home/neoserv/bin/php/bin/php
 <?php
 
 if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
@@ -112,9 +112,9 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 
 		case 'database':
 			if (file_exists(MAIN_HOME . 'bin/install/database.sql')) {
-				$db->query('DROP DATABASE IF EXISTS `xc_vm`;');
-				$db->query('CREATE DATABASE IF NOT EXISTS `xc_vm`;');
-				shell_exec('sudo mysql xc_vm < "' . MAIN_HOME . 'bin/install/database.sql"');
+				$db->query('DROP DATABASE IF EXISTS `neoserv`;');
+				$db->query('CREATE DATABASE IF NOT EXISTS `neoserv`;');
+				shell_exec('sudo mysql neoserv < "' . MAIN_HOME . 'bin/install/database.sql"');
 				shell_exec('sudo ' . PHP_BIN . ' ' . INCLUDES_PATH . 'startup.php');
 				grantPrivilegesToAllServers();
 				$db = new Database($_INFO['username'], $_INFO['password'], $_INFO['database'], $_INFO['hostname'], $_INFO['port']);
@@ -126,7 +126,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 				$rPassword = generateString(10);
 				$rArray = array('username' => 'rescue', 'password' => $rPassword, 'member_group_id' => 1, 'status' => 1, 'credits' => 0);
 				API::processUser($rArray, true);
-				echo 'Blank XC_VM database has been restored.' . "\n" . 'Configuring ports...' . "\n";
+				echo 'Blank NeoServ database has been restored.' . "\n" . 'Configuring ports...' . "\n";
 				$rSocket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 				socket_connect($rSocket, '8.8.8.8', 53);
 				socket_getsockname($rSocket, $rIP);
@@ -150,8 +150,8 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 				}
 				file_put_contents(MAIN_HOME . 'bin/daemons.sh', $rNewScript);
 				file_put_contents(MAIN_HOME . 'bin/nginx/conf/balance.conf', $rNewBalance . '}');
-				shell_exec('sudo systemctl stop xc_vm');
-				shell_exec('sudo systemctl start xc_vm');
+				shell_exec('sudo systemctl stop neoserv');
+				shell_exec('sudo systemctl start neoserv');
 				echo 'Access: http://' . $rIP . '/rescue/' . "\n\n";
 				echo 'Username: rescue' . "\n";
 				echo 'Password: ' . $rPassword . "\n\n";
@@ -164,8 +164,8 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 
 			// no break
 		case 'migration':
-			$db->query('DROP DATABASE IF EXISTS `xc_vm_migrate`;');
-			$db->query('CREATE DATABASE IF NOT EXISTS `xc_vm_migrate`;');
+			$db->query('DROP DATABASE IF EXISTS `neoserv_migrate`;');
+			$db->query('CREATE DATABASE IF NOT EXISTS `neoserv_migrate`;');
 			echo 'Migration database has been cleared.' . "\n";
 
 			$database = (count($argv) == 3 ? $argv[2] : null);
@@ -176,14 +176,14 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 
 				if ($extension === 'sql') {
 					echo 'Restoring: ' . $database . "\n";
-					shell_exec('sudo mysql xc_vm_migrate < ' . escapeshellarg($database));
+					shell_exec('sudo mysql neoserv_migrate < ' . escapeshellarg($database));
 					echo 'If no errors were shown above, restore was completed.' . "\n\n";
 				} else {
 					echo 'Error: File must have .sql extension' . "\n";
 				}
 			} else {
 				echo 'You can restore a database to it using:' . "\n";
-				echo 'sudo mysql xc_vm_migrate < backup.sql' . "\n\n";
+				echo 'sudo mysql neoserv_migrate < backup.sql' . "\n\n";
 			}
 
 			grantPrivilegesToAllServers();
@@ -206,7 +206,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
 			echo 'rescue' . "\t\t\t" . 'Create a rescue access code for the admin panel.' . "\n";
 			echo 'user' . "\t\t\t" . 'Create a rescue admin user for the admin panel.' . "\n";
 			echo 'mysql' . "\t\t\t" . 'Reauthorise load balancers on MySQL.' . "\n";
-			echo 'database' . "\t\t" . 'Restore blank XC_VM database.' . "\n";
+			echo 'database' . "\t\t" . 'Restore blank NeoServ database.' . "\n";
 			echo 'migration' . "\t\t" . 'Clear migration database.' . "\n";
 			echo 'flush' . "\t\t\t" . 'Flush blocked IP database.' . "\n";
 			echo 'ports' . "\t\t\t" . 'Regenerate ports from SQL table.' . "\n";
