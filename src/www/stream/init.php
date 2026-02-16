@@ -24,7 +24,7 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
 @ini_set('default_socket_timeout', 5);
 
 if (!defined('MAIN_HOME')) {
-	define('MAIN_HOME', '/home/xc_vm/');
+	define('MAIN_HOME', '/home/neoserv/');
 }
 
 if (!defined('CONTENT_PATH')) {
@@ -36,7 +36,7 @@ if (!defined('TMP_PATH')) {
 }
 
 define('DEVELOPMENT', false); // It will be deleted in the future.
-define('XC_VM_VERSION', '1.2.15');
+define('NeoServ_VERSION', '1.2.15');
 define('CONFIG_PATH', MAIN_HOME . 'config/');
 define('BIN_PATH', MAIN_HOME . 'bin/');
 define('INCLUDES_PATH', MAIN_HOME . 'includes/');
@@ -97,7 +97,7 @@ if (!$argc) {
 	if (is_array($rSettings) && $rSettings['verify_host']) {
 		$rAllowedDomains = (igbinary_unserialize(file_get_contents(CACHE_TMP_PATH . 'allowed_domains')) ?: array());
 
-		if (!(is_array($rAllowedDomains) && 0 < count($rAllowedDomains) && !in_array(HOST, $rAllowedDomains) && HOST != 'xc_vm') || filter_var(HOST, FILTER_VALIDATE_IP)) {
+		if (!(is_array($rAllowedDomains) && 0 < count($rAllowedDomains) && !in_array(HOST, $rAllowedDomains) && HOST != 'neoserv') || filter_var(HOST, FILTER_VALIDATE_IP)) {
 		} else {
 			generateerror('INVALID_HOST');
 		}
@@ -184,7 +184,7 @@ function generateError($rError, $rKill = true, $rCode = null) {
 	if ($rSettings['debug_show_errors']) {
 		$rErrorDescription = ($rErrorCodes[$rError] ?: '');
 		$rStyle = '*{-webkit-box-sizing:border-box;box-sizing:border-box}body{padding:0;margin:0}#notfound{position:relative;height:100vh}#notfound .notfound{position:absolute;left:50%;top:50%;-webkit-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.notfound{max-width:520px;width:100%;line-height:1.4;text-align:center}.notfound .notfound-404{position:relative;height:200px;margin:0 auto 20px;z-index:-1}.notfound .notfound-404 h1{font-family:Montserrat,sans-serif;font-size:236px;font-weight:200;margin:0;color:#211b19;text-transform:uppercase;position:absolute;left:50%;top:50%;-webkit-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.notfound .notfound-404 h2{font-family:Montserrat,sans-serif;font-size:28px;font-weight:400;text-transform:uppercase;color:#211b19;background:#fff;padding:10px 5px;margin:auto;display:inline-block;position:absolute;bottom:0;left:0;right:0}.notfound p{font-family:Montserrat,sans-serif;font-size:14px;font-weight:300;text-transform:uppercase}@media only screen and (max-width:767px){.notfound .notfound-404 h1{font-size:148px}}@media only screen and (max-width:480px){.notfound .notfound-404{height:148px;margin:0 auto 10px}.notfound .notfound-404 h1{font-size:86px}.notfound .notfound-404 h2{font-size:16px}}';
-		echo '<html><head><title>XC_VM - Debug Mode</title><link href="https://fonts.googleapis.com/css?family=Montserrat:200,400,700" rel="stylesheet"><style>' . $rStyle . '</style></head><body><div id="notfound"><div class="notfound"><div class="notfound-404"><h1>XC_VM</h1><h2>' . $rError . '</h2><br/></div><p>' . $rErrorDescription . '</p></div></div></body></html>';
+		echo '<html><head><title>NeoServ - Debug Mode</title><link href="https://fonts.googleapis.com/css?family=Montserrat:200,400,700" rel="stylesheet"><style>' . $rStyle . '</style></head><body><div id="notfound"><div class="notfound"><div class="notfound-404"><h1>NeoServ</h1><h2>' . $rError . '</h2><br/></div><p>' . $rErrorDescription . '</p></div></div></body></html>';
 
 		if ($rKill) {
 			exit();
