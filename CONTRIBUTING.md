@@ -10,7 +10,6 @@ Thank you for considering contributing to this project! Follow these guidelines 
 - Keep pull requests focused on a single change.
 - If you are refactoring and are not sure if the code is unused elsewhere, comment it out. It will be removed after the release.
 
-
 ## 🛠️ Installation
 
 To install the panel, follow these steps:
@@ -18,22 +17,18 @@ To install the panel, follow these steps:
 1. **Update system**
    ```sh
    sudo apt update && sudo apt full-upgrade -y
-   ```
-
-2. **Install dependencies**
-   ```sh
    sudo apt install -y python3-pip unzip
    ```
 
 3. **Download latest release**
    ```sh
-   latest_version=$(curl -s https://api.github.com/repos/Vateron-Media/XC_VM/releases/latest | grep '"tag_name":' | cut -d '"' -f 4)
-   wget "https://github.com/Vateron-Media/XC_VM/releases/download/${latest_version}/XC_VM.zip"
+   latest_version=$(curl -s https://api.github.com/repos/xneoserv/NeoServ/releases/latest | grep '"tag_name":' | cut -d '"' -f 4)
+   wget "https://github.com/xneoserv/NeoServ/releases/download/${latest_version}/NeoServ.zip"
    ```
 
 4. **Unpack and install**
    ```sh
-   unzip XC_VM.zip
+   unzip NeoServ.zip
    sudo python3 install
    ```
 
@@ -48,7 +43,7 @@ To install the panel, follow these steps:
 - Write unit tests for PHP scripts.
 - To run tests:
   ```sh
-  php8.4 /home/xc_vm/bin/install/php/phpunit-12.0.5.phar --configuration /home/xc_vm/tests/phpunit.xml 
+  php8.4 /home/NeoServ/bin/install/php/phpunit-12.0.5.phar --configuration /home/NeoServ/tests/phpunit.xml 
   ```
 - Ensure all tests pass before submitting PRs. -->
 
@@ -56,15 +51,15 @@ To install the panel, follow these steps:
 
 1. Fork the repository and create a new branch:
    ```sh
-   git checkout -b feature/your-feature
+   git checkout -b feature/neoserv-branding
    ```
 2. Make your changes and commit them:
    ```sh
-   git commit -m "Add feature: description"
+   git commit -m "Add feature: neoserv branding"
    ```
 3. Push your branch:
    ```sh
-   git push origin feature/your-feature
+   git push origin feature/neoserv-branding
    ```
 4. Open a pull request on GitHub.
 
