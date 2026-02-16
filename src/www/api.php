@@ -490,7 +490,7 @@ function loadapi() {
 			}
 
 			$rHeaders = (CoreUtilities::$rRequest['headers'] ? rtrim(CoreUtilities::$rRequest['headers'], "\r\n") . "\r\n" : '');
-			$rHeaders .= 'X-XC_VM-Prebuffer:1' . "\r\n";
+			$rHeaders .= 'X-NeoServ-Prebuffer:1' . "\r\n";
 			$rFetchArguments[] = sprintf('-headers %s', escapeshellarg($rHeaders));
 
 			exit(json_encode(array('result' => true, 'data' => CoreUtilities::probeStream($rURL, $rFetchArguments, '', false))));
