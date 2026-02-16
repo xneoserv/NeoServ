@@ -28,7 +28,14 @@ jobs:
     - name: Update version in PHP files
       run: |
         find . -type f -name "*.php" -exec sed -i \
-        "s/define('XC_VM_VERSION', '[0-9]\+\.[0-9]\+\.[0-9]\+.*');/define('XC_VM_VERSION', '${{ github.event.inputs.version }}');/g" {} \;
+        "s/define('NeoServ_VERSION', '[0-9]\+\.[0-9]\+\.[0-9]\+.*');/define('NeoServ_VERSION', '${{ github.event.inputs.version }}');/g" {} \;
+
+    - name: Update version references
+      run: |
+        find . -type f \( -name "*.php" -o -name "*.ini" -o -name "*.conf" \) -exec sed -i \
+        "s/XC_VM_VERSION/NeoServ_VERSION/g" {} \;
+        find . -type f -name "*.php" -exec sed -i \
+        "s/'XC_VM'/'NeoServ'/g" {} \;
         
     - name: Commit version update
       run: |
@@ -52,7 +59,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.event.inputs.version }}
-        name: XC_VM ${{ github.event.inputs.version }}
+        name: NeoServ ${{ github.event.inputs.version }}
         body: |
           # Pre-release ${{ github.event.inputs.version }}
           
@@ -61,9 +68,20 @@ jobs:
           ## Downloads
           - `update.tar.gz` - Main update archive
           - `loadbalancer_update.tar.gz` - LoadBalancer update archive
+          
+          ## Quick Install
+          ```bash
+          sudo apt update && sudo apt full-upgrade -y
+          sudo apt install -y python3-pip unzip
+          latest_version=$(curl -s https://api.github.com/repos/xneoserv/NeoServ/releases/latest | grep '"tag_name":' | cut -d '"' -f 4)
+          wget "https://github.com/xneoserv/NeoServ/releases/download/${latest_version}/NeoServ.zip"
+          unzip NeoServ.zip
+          sudo python3 install
+          ```
         draft: false
         prerelease: true
         files: |
+          dist/NeoServ.zip
           dist/update.tar.gz
           dist/loadbalancer_update.tar.gz
           dist/hashes.md5
