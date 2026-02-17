@@ -1,11 +1,11 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc && $argc > 2) {
         error_reporting(0);
         ini_set('display_errors', 0);
         $rStreamID = intval($argv[1]);
         $rServerID = intval($argv[2]);
-        define('MAIN_HOME', '/home/xc_vm/');
+        define('MAIN_HOME', '/home/neoserv/');
         define('STREAMS_PATH', MAIN_HOME . 'content/streams/');
         define('INCLUDES_PATH', MAIN_HOME . 'includes/');
         define('FFMPEG', MAIN_HOME . 'bin/ffmpeg_bin/4.0/ffmpeg');
@@ -54,7 +54,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 function startLoopback($rStreamID, $rServerID, $rSegListSize, $rSegDeleteThreshold) {
     global $rServers;
