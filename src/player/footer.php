@@ -7,7 +7,7 @@
 
 
 echo '    <footer class="footer">' . "\r\n\t\t" . '<div class="container">' . "\r\n\t\t\t" . '<div class="row">' . "\r\n\t\t\t\t" . '<div class="col-12">' . "\r\n\t\t\t\t\t" . '<div class="footer__copyright">' . "\r\n" . '                        &copy; 2025 <img height="20px" style="padding-left: 10px; padding-right: 10px; margin-top: -2px;" src="img/logo.png"> v';
-echo XC_VM_VERSION;
+echo NeoServ_VERSION;
 echo "\t\t\t\t\t" . '</div>' . "\r\n\t\t\t\t" . '</div>' . "\r\n\t\t\t" . '</div>' . "\r\n\t\t" . '</div>' . "\r\n\t" . '</footer>' . "\r\n\t" . '<script src="./js/jquery-3.5.1.min.js"></script>' . "\r\n\t" . '<script src="./js/bootstrap.bundle.min.js"></script>' . "\r\n\t" . '<script src="./js/owl.carousel.min.js"></script>' . "\r\n\t" . '<script src="./js/jquery.mousewheel.min.js"></script>' . "\r\n\t" . '<script src="./js/jquery.mcustomscrollbar.min.js"></script>' . "\r\n\t" . '<script src="./js/wnumb.js"></script>' . "\r\n\t" . '<script src="./js/nouislider.min.js"></script>' . "\r\n\t" . '<script src="./js/jquery.morelines.min.js"></script>' . "\r\n\t" . '<script src="./js/photoswipe.min.js"></script>' . "\r\n\t" . '<script src="./js/photoswipe-ui-default.min.js"></script>' . "\r\n" . '    <script src="./js/glightbox.min.js"></script>' . "\r\n" . '    <script src="./js/jBox.all.min.js"></script>' . "\r\n" . '    <script src="./js/select2.min.js"></script>' . "\r\n" . '    <script src="./js/jwplayer.js"></script>' . "\r\n" . '    <script src="./js/jwplayer.core.controls.js"></script>' . "\r\n" . '    <script src="./js/provider.hlsjs.js"></script>' . "\r\n\t" . '<script src="./js/main.js"></script>' . "\r\n" . '    <script>' . "\r\n" . '    $(document).ready(function () {' . "\r\n" . '        ';
 
 if ($_PAGE != 'profile') {
@@ -35,14 +35,14 @@ if ($_PAGE == 'profile') {
 	if ($_PAGE == 'live') {
 		if (0 >= count($rStreamIDs)) {
 		} else {
-			echo '    window.updateTimer = null;' . "\r\n" . '    window.XC_VM = window.XC_VM || {};' . "\r\n" . '    window.XC_VM.Listings = window.XC_VM.Listings || {};' . "\r\n" . '    window.XC_VM.Listings.DefaultChannels = "';
+			echo '    window.updateTimer = null;' . "\r\n" . '    window.NeoServ = window.NeoServ || {};' . "\r\n" . '    window.NeoServ.Listings = window.NeoServ.Listings || {};' . "\r\n" . '    window.NeoServ.Listings.DefaultChannels = "';
 			echo implode(',', $rStreamIDs);
 			echo '";' . "\r\n" . '    ';
 
 			if ($rFilterBy == 'epg') {
-				echo '    window.XC_VM.Listings.HideEmpty = 1;' . "\r\n" . '    ';
+				echo '    window.NeoServ.Listings.HideEmpty = 1;' . "\r\n" . '    ';
 			} else {
-				echo '    window.XC_VM.Listings.HideEmpty = 0;' . "\r\n" . '    ';
+				echo '    window.NeoServ.Listings.HideEmpty = 0;' . "\r\n" . '    ';
 			}
 		}
 
