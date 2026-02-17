@@ -1,10 +1,10 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     set_time_limit(0);
     if ($argc) {
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
-        cli_set_process_title('XC_VM[Errors]');
+        cli_set_process_title('NeoServ[Errors]');
         $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
         CoreUtilities::checkCron($rIdentifier);
         $rIgnoreErrors = array('the user-agent option is deprecated', 'last message repeated', 'deprecated', 'packets poorly interleaved', 'invalid timestamps', 'timescale not set', 'frame size not set', 'non-monotonous dts in output stream', 'invalid dts', 'no trailing crlf', 'failed to parse extradata', 'truncated', 'missing picture', 'non-existing pps', 'clipping', 'out of range', 'cannot use rename on non file protocol', 'end of file', 'stream ends prematurely');
@@ -13,7 +13,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 
 function sqlValue($value, $isNumeric = false) {
