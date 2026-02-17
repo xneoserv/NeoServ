@@ -1,5 +1,5 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
@@ -9,7 +9,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         } else {
             $rStartup = true;
         }
-        cli_set_process_title('XC_VM[Cache Builder]');
+        cli_set_process_title('NeoServ[Cache Builder]');
         $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
         CoreUtilities::checkCron($rIdentifier);
         loadCron();
@@ -17,7 +17,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 function loadCron() {
     global $db;
