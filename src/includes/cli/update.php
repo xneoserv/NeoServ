@@ -30,9 +30,9 @@ function loadcli() {
     switch ($rCommand) {
         case 'update':
             if (CoreUtilities::$rServers[SERVER_ID]['is_main']) {
-                $UpdateData = $gitRelease->getUpdateFile("main", XC_VM_VERSION);
+                $UpdateData = $gitRelease->getUpdateFile("main", NeoServ_VERSION);
             } else {
-                $UpdateData = $gitRelease->getUpdateFile("lb_update", CoreUtilities::$rServers[SERVER_ID]['xc_vm_version']);
+                $UpdateData = $gitRelease->getUpdateFile("lb_update", CoreUtilities::$rServers[SERVER_ID]['neoserv_version']);
             }
 
             // Download and validate main update archive
@@ -65,7 +65,7 @@ function loadcli() {
             }
 
             // Mark server as updated and set current version
-            $db->query('UPDATE `servers` SET `status` = 1, `xc_vm_version` = ? WHERE `id` = ?;', XC_VM_VERSION, SERVER_ID);
+            $db->query('UPDATE `servers` SET `status` = 1, `neoserv_version` = ? WHERE `id` = ?;', NeoServ_VERSION, SERVER_ID);
             $db->query('UPDATE `settings` SET `update_data` = NULL;');
 
             // Update checkpoint
@@ -115,7 +115,7 @@ function loadcli() {
             }
 
             // Fix permissions and reload services
-            exec('sudo chown -R xc_vm:xc_vm ' . MAIN_HOME);
+            exec('sudo chown -R neoserv:neoserv ' . MAIN_HOME);
             exec('sudo systemctl daemon-reload');
             exec("sudo echo 'net.ipv4.ip_unprivileged_port_start=0' > /etc/sysctl.d/50-allports-nonroot.conf && sudo sysctl --system");
             exec('sudo ' . MAIN_HOME . 'status');
