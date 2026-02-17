@@ -1,9 +1,9 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
-        cli_set_process_title('XC_VM[Servers]');
+        cli_set_process_title('NeoServ[Servers]');
         $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
         CoreUtilities::checkCron($rIdentifier);
         loadCron();
@@ -11,7 +11,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 function pingServer($rIP, $rPort) {
     $rStartTime = microtime(true);
@@ -31,25 +31,25 @@ function loadCron() {
     if (CoreUtilities::isRunning()) {
         $rServers = CoreUtilities::getServers(true);
         if ($rServers[SERVER_ID]['is_main'] && CoreUtilities::$rSettings['redis_handler']) {
-            exec('pgrep -u xc_vm redis-server', $rRedis);
+            exec('pgrep -u neoserv redis-server', $rRedis);
             if (count($rRedis) == 0) {
                 echo 'Restarting Redis!' . "\n";
                 shell_exec(MAIN_HOME . 'bin/redis/redis-server ' . MAIN_HOME . '/bin/redis/redis.conf > /dev/null 2>/dev/null &');
             }
         }
-        $rSignals = intval(trim(shell_exec('pgrep -U xc_vm | xargs ps -f -p | grep signals | grep -v grep | grep -v pgrep | wc -l')));
+        $rSignals = intval(trim(shell_exec('pgrep -U neoserv | xargs ps -f -p | grep signals | grep -v grep | grep -v pgrep | wc -l')));
         if ($rSignals == 0) {
             shell_exec(PHP_BIN . ' ' . CLI_PATH . 'signals.php > /dev/null 2>/dev/null &');
         }
         if ($rServers[SERVER_ID]['is_main']) {
-            $rCache = intval(trim(shell_exec('pgrep -U xc_vm | xargs ps -f -p | grep cache_handler | grep -v grep | grep -v pgrep | wc -l')));
+            $rCache = intval(trim(shell_exec('pgrep -U neoserv | xargs ps -f -p | grep cache_handler | grep -v grep | grep -v pgrep | wc -l')));
             if (CoreUtilities::$rSettings['enable_cache'] && $rCache == 0) {
                 shell_exec(PHP_BIN . ' ' . CLI_PATH . 'cache_handler.php > /dev/null 2>/dev/null &');
             } else {
                 if (CoreUtilities::$rSettings['enable_cache'] || 0 >= $rCache) {
                 } else {
                     echo 'Killing Cache Handler' . "\n";
-                    exec("pgrep -U xc_vm | xargs ps | grep cache_handler | awk '{print \$1}'", $rPIDs);
+                    exec("pgrep -U neoserv | xargs ps | grep cache_handler | awk '{print \$1}'", $rPIDs);
                     foreach ($rPIDs as $rPID) {
                         if (0 >= intval($rPID)) {
                         } else {
@@ -59,26 +59,26 @@ function loadCron() {
                 }
             }
         }
-        $rNetwork = intval(trim(shell_exec('pgrep -U xc_vm | xargs ps -f -p | grep network | grep -v grep | grep -v pgrep | wc -l')));
+        $rNetwork = intval(trim(shell_exec('pgrep -U neoserv | xargs ps -f -p | grep network | grep -v grep | grep -v pgrep | wc -l')));
         if ($rNetwork == 0) {
             shell_exec(BIN_PATH . 'network > /dev/null 2>/dev/null &');
         }
-        $rWatchdog = intval(trim(shell_exec('pgrep -U xc_vm | xargs ps -f -p | grep watchdog | grep -v grep | grep -v pgrep | wc -l')));
+        $rWatchdog = intval(trim(shell_exec('pgrep -U neoserv | xargs ps -f -p | grep watchdog | grep -v grep | grep -v pgrep | wc -l')));
         if ($rWatchdog == 0) {
             shell_exec(PHP_BIN . ' ' . CLI_PATH . 'watchdog.php > /dev/null 2>/dev/null &');
         }
-        $rQueue = intval(trim(shell_exec('pgrep -U xc_vm | xargs ps -f -p | grep queue | grep -v grep | grep -v pgrep | wc -l')));
+        $rQueue = intval(trim(shell_exec('pgrep -U neoserv | xargs ps -f -p | grep queue | grep -v grep | grep -v pgrep | wc -l')));
         if ($rQueue == 0) {
             shell_exec(PHP_BIN . ' ' . CLI_PATH . 'queue.php > /dev/null 2>/dev/null &');
         }
-        $rOnDemand = intval(trim(shell_exec('pgrep -U xc_vm | xargs ps -f -p | grep ondemand | grep -v grep | grep -v pgrep | wc -l')));
+        $rOnDemand = intval(trim(shell_exec('pgrep -U neoserv | xargs ps -f -p | grep ondemand | grep -v grep | grep -v pgrep | wc -l')));
         if (CoreUtilities::$rSettings['on_demand_instant_off'] && $rOnDemand == 0) {
             shell_exec(PHP_BIN . ' ' . CLI_PATH . 'ondemand.php > /dev/null 2>/dev/null &');
         } else {
             if (CoreUtilities::$rSettings['on_demand_instant_off'] || 0 >= $rOnDemand) {
             } else {
                 echo 'Killing On-Demand Instant-Off' . "\n";
-                exec("pgrep -U xc_vm | xargs ps | grep ondemand | awk '{print \$1}'", $rPIDs);
+                exec("pgrep -U neoserv | xargs ps | grep ondemand | awk '{print \$1}'", $rPIDs);
                 foreach ($rPIDs as $rPID) {
                     if (0 >= intval($rPID)) {
                     } else {
@@ -87,14 +87,14 @@ function loadCron() {
                 }
             }
         }
-        $rScanner = intval(trim(shell_exec('pgrep -U xc_vm | xargs ps -f -p | grep scanner | grep -v grep | grep -v pgrep | wc -l')));
+        $rScanner = intval(trim(shell_exec('pgrep -U neoserv | xargs ps -f -p | grep scanner | grep -v grep | grep -v pgrep | wc -l')));
         if (CoreUtilities::$rSettings['on_demand_checker'] && $rScanner == 0) {
             shell_exec(PHP_BIN . ' ' . CLI_PATH . 'scanner.php > /dev/null 2>/dev/null &');
         } else {
             if (CoreUtilities::$rSettings['on_demand_checker'] || 0 >= $rScanner) {
             } else {
                 echo 'Killing On-Demand Scanner' . "\n";
-                exec("pgrep -U xc_vm | xargs ps | grep scanner | awk '{print \$1}'", $rPIDs);
+                exec("pgrep -U neoserv | xargs ps | grep scanner | awk '{print \$1}'", $rPIDs);
                 foreach ($rPIDs as $rPID) {
                     if (0 >= intval($rPID)) {
                     } else {
@@ -158,7 +158,7 @@ function loadCron() {
         }
         $rAddresses = array_values(array_unique(array_map('trim', explode("\n", shell_exec("ip -4 addr | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'")))));
         $db->query('INSERT INTO `servers_stats`(`server_id`, `connections`, `total_users`, `users`, `streams`, `cpu`, `cpu_cores`, `cpu_avg`, `total_mem`, `total_mem_free`, `total_mem_used`, `total_mem_used_percent`, `total_disk_space`, `uptime`, `total_running_streams`, `bytes_sent`, `bytes_received`, `bytes_sent_total`, `bytes_received_total`, `cpu_load_average`, `gpu_info`, `iostat_info`, `time`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP());', SERVER_ID, $rConnections, $rAllUsers, $rUsers, $rStreams, $rStats['cpu'], $rStats['cpu_cores'], $rStats['cpu_avg'], $rStats['total_mem'], $rStats['total_mem_free'], $rStats['total_mem_used'], $rStats['total_mem_used_percent'], $rStats['total_disk_space'], $rStats['uptime'], $rStats['total_running_streams'], $rStats['bytes_sent'], $rStats['bytes_received'], $rStats['bytes_sent_total'], $rStats['bytes_received_total'], $rStats['cpu_load_average'], json_encode($rStats['gpu_info'], JSON_UNESCAPED_UNICODE), json_encode($rStats['iostat_info'], JSON_UNESCAPED_UNICODE));
-        $db->query('UPDATE `servers` SET `remote_status` = ?, `xc_vm_version` = ?, `server_hardware` = ?,`whitelist_ips` = ?, `governors` = ?, `sysctl` = ?, `video_devices` = ?, `audio_devices` = ?, `gpu_info` = ?, `interfaces` = ?, `time_offset` = ' . intval(time()) . ' - UNIX_TIMESTAMP(), `ping` = ? WHERE `id` = ?', $rRemoteStatus, XC_VM_VERSION, json_encode($rHardware, JSON_UNESCAPED_UNICODE), json_encode($rAddresses, JSON_UNESCAPED_UNICODE), json_encode($rGovernors, JSON_UNESCAPED_UNICODE), $rSysCtl, json_encode($rStats['video_devices'], JSON_UNESCAPED_UNICODE), json_encode($rStats['audio_devices'], JSON_UNESCAPED_UNICODE), json_encode($rStats['gpu_info'], JSON_UNESCAPED_UNICODE), json_encode($rStats['interfaces'], JSON_UNESCAPED_UNICODE), $rPing, SERVER_ID);
+        $db->query('UPDATE `servers` SET `remote_status` = ?, `neoserv_version` = ?, `server_hardware` = ?,`whitelist_ips` = ?, `governors` = ?, `sysctl` = ?, `video_devices` = ?, `audio_devices` = ?, `gpu_info` = ?, `interfaces` = ?, `time_offset` = ' . intval(time()) . ' - UNIX_TIMESTAMP(), `ping` = ? WHERE `id` = ?', $rRemoteStatus, NeoServ_VERSION, json_encode($rHardware, JSON_UNESCAPED_UNICODE), json_encode($rAddresses, JSON_UNESCAPED_UNICODE), json_encode($rGovernors, JSON_UNESCAPED_UNICODE), $rSysCtl, json_encode($rStats['video_devices'], JSON_UNESCAPED_UNICODE), json_encode($rStats['audio_devices'], JSON_UNESCAPED_UNICODE), json_encode($rStats['gpu_info'], JSON_UNESCAPED_UNICODE), json_encode($rStats['interfaces'], JSON_UNESCAPED_UNICODE), $rPing, SERVER_ID);
         if ($rServers[SERVER_ID]['is_main']) {
             foreach ($rServers as $rServerID => $rServerArray) {
                 if ($rServerArray['server_online'] != $rServerArray['last_status']) {
@@ -168,7 +168,7 @@ function loadCron() {
             $db->query('DELETE FROM `signals` WHERE `time` <= ?;', time() - 86400);
         }
     } else {
-        echo 'XC_VM not running...' . "\n";
+        echo 'NeoServ not running...' . "\n";
     }
 }
 function shutdown() {
