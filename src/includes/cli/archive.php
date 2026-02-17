@@ -1,5 +1,5 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc && $argc > 1) {
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../../www/init.php';
@@ -12,7 +12,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 function loadcli() {
     global $db;
