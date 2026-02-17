@@ -9,7 +9,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
             exit("[MYSQL] Critical error, aborting\n");
         }
 
-        cli_set_process_title('XC_VM[MysqlErrors]');
+        cli_set_process_title('NeoServ[MysqlErrors]');
         $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
         CoreUtilities::checkCron($rIdentifier);
         $rIgnoreErrors = array('innodb: page_cleaner', 'aborted connection', 'got an error reading communication packets', 'got packets out of order', 'got timeout reading communication packets');
