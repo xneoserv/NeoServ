@@ -3,8 +3,8 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
     if ($argc) {
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../../www/init.php';
-        $rBaseDir = '/home/xc_vm/bin/';
-        $geolitejsonFile = '/home/xc_vm/bin/maxmind/version.json';
+        $rBaseDir = '/home/neoserv/bin/';
+        $geolitejsonFile = '/home/neoserv/bin/maxmind/version.json';
         loadcli();
     } else {
         exit(0);
@@ -67,7 +67,7 @@ function loadcli() {
                     file_put_contents($rFile['path'], $rData);
 
                     // Set correct owner and permissions
-                    shell_exec('sudo chown xc_vm:xc_vm "' . $rFile['path'] . '"');
+                    shell_exec('sudo chown neoserv:neoserv "' . $rFile['path'] . '"');
                     shell_exec('sudo chmod ' . $rFile["permission"] . ' "' . $rFile['path'] . '"');
                     $rUpdated = true;
                 }
@@ -88,7 +88,7 @@ function loadcli() {
 
     // If any file was updated → fix ownership for the whole base directory
     if ($rUpdated) {
-        shell_exec('sudo chown -R xc_vm:xc_vm "' . $rBaseDir . '"');
+        shell_exec('sudo chown -R neoserv:neoserv "' . $rBaseDir . '"');
     }
 }
 
