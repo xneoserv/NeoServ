@@ -1,6 +1,6 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] != 'xc_vm') {
-    exit('Please run as XC_VM!' . "\n");
+if (posix_getpwuid(posix_geteuid())['name'] != 'neoserv') {
+    exit('Please run as NeoServ!' . "\n");
 }
 
 if ($argc && $argc >= 6) {
@@ -9,9 +9,9 @@ if ($argc && $argc >= 6) {
         exit();
     }
 
-    shell_exec("kill -9 `ps -ef | grep 'XC_VM Install\\[" . $rServerID . "\\]' | grep -v grep | awk '{print \$2}'`;");
+    shell_exec("kill -9 `ps -ef | grep 'NeoServ Install\\[" . $rServerID . "\\]' | grep -v grep | awk '{print \$2}'`;");
     set_time_limit(0);
-    cli_set_process_title('XC_VM Install[' . $rServerID . ']');
+    cli_set_process_title('NeoServ Install[' . $rServerID . ']');
     register_shutdown_function('shutdown');
     require str_replace('\\', '/', dirname($argv[0])) . '/../../www/init.php';
     unlink(CACHE_TMP_PATH . 'servers');
@@ -24,7 +24,7 @@ if ($argc && $argc >= 6) {
     $rUpdateSysctl = (empty($argv[8]) ? 0 : intval($argv[8]));
     $rPrivateIP = (empty($argv[9]) ? 0 : intval($argv[9]));
     $rParentIDs = (empty($argv[10]) ? array() : json_decode($argv[10], true));
-    $rSysCtl = '# XC_VM' . PHP_EOL . PHP_EOL . 'net.ipv4.tcp_congestion_control = bbr' . PHP_EOL . 'net.core.default_qdisc = fq' . PHP_EOL . 'net.ipv4.tcp_rmem = 8192 87380 134217728' . PHP_EOL . 'net.ipv4.udp_rmem_min = 16384' . PHP_EOL . 'net.core.rmem_default = 262144' . PHP_EOL . 'net.core.rmem_max = 268435456' . PHP_EOL . 'net.ipv4.tcp_wmem = 8192 65536 134217728' . PHP_EOL . 'net.ipv4.udp_wmem_min = 16384' . PHP_EOL . 'net.core.wmem_default = 262144' . PHP_EOL . 'net.core.wmem_max = 268435456' . PHP_EOL . 'net.core.somaxconn = 1000000' . PHP_EOL . 'net.core.netdev_max_backlog = 250000' . PHP_EOL . 'net.core.optmem_max = 65535' . PHP_EOL . 'net.ipv4.tcp_max_tw_buckets = 1440000' . PHP_EOL . 'net.ipv4.tcp_max_orphans = 16384' . PHP_EOL . 'net.ipv4.ip_local_port_range = 2000 65000' . PHP_EOL . 'net.ipv4.tcp_no_metrics_save = 1' . PHP_EOL . 'net.ipv4.tcp_slow_start_after_idle = 0' . PHP_EOL . 'net.ipv4.tcp_fin_timeout = 15' . PHP_EOL . 'net.ipv4.tcp_keepalive_time = 300' . PHP_EOL . 'net.ipv4.tcp_keepalive_probes = 5' . PHP_EOL . 'net.ipv4.tcp_keepalive_intvl = 15' . PHP_EOL . 'fs.file-max=20970800' . PHP_EOL . 'fs.nr_open=20970800' . PHP_EOL . 'fs.aio-max-nr=20970800' . PHP_EOL . 'net.ipv4.tcp_timestamps = 1' . PHP_EOL . 'net.ipv4.tcp_window_scaling = 1' . PHP_EOL . 'net.ipv4.tcp_mtu_probing = 1' . PHP_EOL . 'net.ipv4.route.flush = 1' . PHP_EOL . 'net.ipv6.route.flush = 1';
+    $rSysCtl = '# NeoServ' . PHP_EOL . PHP_EOL . 'net.ipv4.tcp_congestion_control = bbr' . PHP_EOL . 'net.core.default_qdisc = fq' . PHP_EOL . 'net.ipv4.tcp_rmem = 8192 87380 134217728' . PHP_EOL . 'net.ipv4.udp_rmem_min = 16384' . PHP_EOL . 'net.core.rmem_default = 262144' . PHP_EOL . 'net.core.rmem_max = 268435456' . PHP_EOL . 'net.ipv4.tcp_wmem = 8192 65536 134217728' . PHP_EOL . 'net.ipv4.udp_wmem_min = 16384' . PHP_EOL . 'net.core.wmem_default = 262144' . PHP_EOL . 'net.core.wmem_max = 268435456' . PHP_EOL . 'net.core.somaxconn = 1000000' . PHP_EOL . 'net.core.netdev_max_backlog = 250000' . PHP_EOL . 'net.core.optmem_max = 65535' . PHP_EOL . 'net.ipv4.tcp_max_tw_buckets = 1440000' . PHP_EOL . 'net.ipv4.tcp_max_orphans = 16384' . PHP_EOL . 'net.ipv4.ip_local_port_range = 2000 65000' . PHP_EOL . 'net.ipv4.tcp_no_metrics_save = 1' . PHP_EOL . 'net.ipv4.tcp_slow_start_after_idle = 0' . PHP_EOL . 'net.ipv4.tcp_fin_timeout = 15' . PHP_EOL . 'net.ipv4.tcp_keepalive_time = 300' . PHP_EOL . 'net.ipv4.tcp_keepalive_probes = 5' . PHP_EOL . 'net.ipv4.tcp_keepalive_intvl = 15' . PHP_EOL . 'fs.file-max=20970800' . PHP_EOL . 'fs.nr_open=20970800' . PHP_EOL . 'fs.aio-max-nr=20970800' . PHP_EOL . 'net.ipv4.tcp_timestamps = 1' . PHP_EOL . 'net.ipv4.tcp_window_scaling = 1' . PHP_EOL . 'net.ipv4.tcp_mtu_probing = 1' . PHP_EOL . 'net.ipv4.route.flush = 1' . PHP_EOL . 'net.ipv6.route.flush = 1';
     $rInstallDir = BIN_PATH . 'install/';
 
     if ($rType == 1) {
@@ -32,7 +32,7 @@ if ($argc && $argc >= 6) {
         $rInstallFiles = 'proxy.tar.gz';
     } elseif ($rType == 2) {
         $rPackages = array('cpufrequtils', 'iproute2', 'python', 'net-tools', 'dirmngr', 'gpg-agent', 'software-properties-common', 'libmaxminddb0', 'libmaxminddb-dev', 'mmdb-bin', 'libcurl4', 'libgeoip-dev', 'libxslt1-dev', 'libonig-dev', 'e2fsprogs', 'wget', 'sysstat', 'alsa-utils', 'v4l-utils', 'mcrypt', 'python3', 'certbot', 'iptables-persistent', 'libjpeg-dev', 'libpng-dev', 'php-ssh2', 'xz-utils', 'zip', 'unzip', 'cron', 'libfribidi-dev', 'libharfbuzz-dev', 'libogg0');
-        $UpdateData = $gitRelease->getUpdateFile("lb", XC_VM_VERSION);
+        $UpdateData = $gitRelease->getUpdateFile("lb", NeoServ_VERSION);
 
         $rInstallFiles = $UpdateData['url'];
         $hash = $UpdateData['md5'];
@@ -67,9 +67,9 @@ if ($argc && $argc >= 6) {
         $rVersion = trim($rOS['output']);
         echo "\n" . 'Remote OS version: $rVersion' . "\n";
 
-        echo "\n" . 'Stopping any previous version of XC_VM' . "\n";
-        runCommand($rConn, 'sudo systemctl stop xc_vm');
-        runCommand($rConn, 'sudo killall -9 -u xc_vm');
+        echo "\n" . 'Stopping any previous version of NeoServ' . "\n";
+        runCommand($rConn, 'sudo systemctl stop neoserv');
+        runCommand($rConn, 'sudo killall -9 -u neoserv');
         echo "\n" . 'Updating system' . "\n";
         runCommand($rConn, 'sudo rm /var/lib/dpkg/lock-frontend && sudo rm /var/cache/apt/archives/lock && sudo rm /var/lib/dpkg/lock');
         if ($rType == 2) {
@@ -100,8 +100,8 @@ if ($argc && $argc >= 6) {
 
 
         if (in_array($rType, array(1, 2))) {
-            echo 'Creating XC_VM system user' . "\n";
-            runCommand($rConn, 'sudo adduser --system --shell /bin/false --group --disabled-login xc_vm');
+            echo 'Creating NeoServ system user' . "\n";
+            runCommand($rConn, 'sudo adduser --system --shell /bin/false --group --disabled-login neoserv');
             runCommand($rConn, 'sudo mkdir ' . MAIN_HOME);
             runCommand($rConn, 'sudo rm -rf ' . BIN_PATH);
         }
@@ -125,14 +125,14 @@ if ($argc && $argc >= 6) {
             }
         } else {
             echo 'Download archive' . "\n";
-            runCommand($rConn, 'wget --timeout=2 -O /tmp/XC_VM.tar.gz -o /dev/null "' . $rInstallFiles . '"');
-            $fileHash = runCommand($rConn, 'md5=($(md5sum /tmp/XC_VM.tar.gz)); echo $md5;');
+            runCommand($rConn, 'wget --timeout=2 -O /tmp/NeoServ.tar.gz -o /dev/null "' . $rInstallFiles . '"');
+            $fileHash = runCommand($rConn, 'md5=($(md5sum /tmp/NeoServ.tar.gz)); echo $md5;');
             if (!empty($fileHash['output']) && $hash == trim($fileHash['output'])) {
                 echo 'Extracting to directory' . "\n";
                 $rRet = runCommand($rConn, 'sudo rm -rf ' . MAIN_HOME . 'status');
-                $rRet = runCommand($rConn, 'sudo tar -zxvf "/tmp/XC_VM.tar.gz" -C "' . MAIN_HOME . '"');
+                $rRet = runCommand($rConn, 'sudo tar -zxvf "/tmp/NeoServ.tar.gz" -C "' . MAIN_HOME . '"');
                 if (file_exists(MAIN_HOME . 'status')) {
-                    runCommand($rConn, 'sudo rm -f "/tmp/XC_VM.tar.gz"');
+                    runCommand($rConn, 'sudo rm -f "/tmp/NeoServ.tar.gz"');
                 } else {
                     $db->query('UPDATE `servers` SET `status` = 4 WHERE `id` = ?;', $rServerID);
                     echo 'Failed to extract files! Exiting' . "\n";
@@ -151,7 +151,7 @@ if ($argc && $argc >= 6) {
                 runCommand($rConn, 'sudo echo "tmpfs ' . STREAMS_PATH . ' tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=90% 0 0" >> /etc/fstab');
                 runCommand($rConn, 'sudo echo "tmpfs ' . TMP_PATH . ' tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=2G 0 0" >> /etc/fstab');
             }
-            if (stripos(runCommand($rConn, 'sudo cat /etc/sysctl.conf')['output'], 'XC_VM') === false) {
+            if (stripos(runCommand($rConn, 'sudo cat /etc/sysctl.conf')['output'], 'NeoServ') === false) {
                 if ($rUpdateSysctl) {
                     echo 'Adding sysctl.conf' . "\n";
                     runCommand($rConn, 'sudo modprobe ip_conntrack');
@@ -174,26 +174,26 @@ if ($argc && $argc >= 6) {
         $rMasterConfig = parse_ini_file(CONFIG_PATH . 'config.ini');
         if ($rType == 1) {
             if ($rPrivateIP) {
-                $rNewConfig = '; XC_VM Configuration' . "\n" . '; -----------------' . "\n\n" . '[XC_VM]' . "\n" . 'hostname    =   "' . CoreUtilities::$rServers[SERVER_ID]['private_ip'] . '"' . "\n" . 'port        =   ' . intval(CoreUtilities::$rServers[SERVER_ID]['http_broadcast_port']) . "\n" . 'server_id   =   ' . $rServerID;
+                $rNewConfig = '; NeoServ Configuration' . "\n" . '; -----------------' . "\n\n" . '[NeoServ]' . "\n" . 'hostname    =   "' . CoreUtilities::$rServers[SERVER_ID]['private_ip'] . '"' . "\n" . 'port        =   ' . intval(CoreUtilities::$rServers[SERVER_ID]['http_broadcast_port']) . "\n" . 'server_id   =   ' . $rServerID;
             } else {
-                $rNewConfig = '; XC_VM Configuration' . "\n" . '; -----------------' . "\n\n" . '[XC_VM]' . "\n" . 'hostname    =   "' . CoreUtilities::$rServers[SERVER_ID]['server_ip'] . '"' . "\n" . 'port        =   ' . intval(CoreUtilities::$rServers[SERVER_ID]['http_broadcast_port']) . "\n" . 'server_id   =   ' . $rServerID;
+                $rNewConfig = '; NeoServ Configuration' . "\n" . '; -----------------' . "\n\n" . '[NeoServ]' . "\n" . 'hostname    =   "' . CoreUtilities::$rServers[SERVER_ID]['server_ip'] . '"' . "\n" . 'port        =   ' . intval(CoreUtilities::$rServers[SERVER_ID]['http_broadcast_port']) . "\n" . 'server_id   =   ' . $rServerID;
             }
         } else {
-            $rNewConfig = '; XC_VM Configuration' . "\n" . '; -----------------' . "\n\n" . '[XC_VM]' . "\n" . 'hostname    =   "' . CoreUtilities::$rServers[SERVER_ID]['server_ip'] . '"' . "\n" . 'database    =   "xc_vm"' . "\n" . 'port        =   ' . intval(CoreUtilities::$rConfig['port']) . "\n" . 'server_id   =   ' . $rServerID . "\n" . 'is_lb       =   1' . "\n\n" . '[Encrypted]' . "\n" . 'username    =   "' . CoreUtilities::$rConfig['username'] . '"' . "\n" . 'password    =   "' . CoreUtilities::$rConfig['password'] . '"';
+            $rNewConfig = '; NeoServ Configuration' . "\n" . '; -----------------' . "\n\n" . '[NeoServ]' . "\n" . 'hostname    =   "' . CoreUtilities::$rServers[SERVER_ID]['server_ip'] . '"' . "\n" . 'database    =   "neoserv"' . "\n" . 'port        =   ' . intval(CoreUtilities::$rConfig['port']) . "\n" . 'server_id   =   ' . $rServerID . "\n" . 'is_lb       =   1' . "\n\n" . '[Encrypted]' . "\n" . 'username    =   "' . CoreUtilities::$rConfig['username'] . '"' . "\n" . 'password    =   "' . CoreUtilities::$rConfig['password'] . '"';
         }
         file_put_contents(TMP_PATH . 'config_' . $rServerID, $rNewConfig);
         sendfile($rConn, TMP_PATH . 'config_' . $rServerID, CONFIG_PATH . 'config.ini');
         echo 'Installing service' . "\n";
-        runCommand($rConn, 'sudo rm /etc/systemd/system/xc_vm.service');
-        $rSystemd = '[Unit]' . "\n" . 'SourcePath=/home/xc_vm/service' . "\n" . 'Description=XC_VM Service' . "\n" . 'After=network.target' . "\n" . 'StartLimitIntervalSec=0' . "\n\n" . '[Service]' . "\n" . 'Type=simple' . "\n" . 'User=root' . "\n" . 'Restart=always' . "\n" . 'RestartSec=1' . "\n" . 'ExecStart=/bin/bash /home/xc_vm/service start' . "\n" . 'ExecRestart=/bin/bash /home/xc_vm/service restart' . "\n" . 'ExecStop=/bin/bash /home/xc_vm/service stop' . "\n\n" . '[Install]' . "\n" . 'WantedBy=multi-user.target';
+        runCommand($rConn, 'sudo rm /etc/systemd/system/neoserv.service');
+        $rSystemd = '[Unit]' . "\n" . 'SourcePath=/home/neoserv/service' . "\n" . 'Description=NeoServ Service' . "\n" . 'After=network.target' . "\n" . 'StartLimitIntervalSec=0' . "\n\n" . '[Service]' . "\n" . 'Type=simple' . "\n" . 'User=root' . "\n" . 'Restart=always' . "\n" . 'RestartSec=1' . "\n" . 'ExecStart=/bin/bash /home/neoserv/service start' . "\n" . 'ExecRestart=/bin/bash /home/neoserv/service restart' . "\n" . 'ExecStop=/bin/bash /home/neoserv/service stop' . "\n\n" . '[Install]' . "\n" . 'WantedBy=multi-user.target';
         file_put_contents(TMP_PATH . 'systemd_' . $rServerID, $rSystemd);
-        sendfile($rConn, TMP_PATH . 'systemd_' . $rServerID, '/etc/systemd/system/xc_vm.service');
-        runCommand($rConn, 'sudo chmod +x /etc/systemd/system/xc_vm.service');
-        runCommand($rConn, 'sudo rm /etc/init.d/xc_vm');
+        sendfile($rConn, TMP_PATH . 'systemd_' . $rServerID, '/etc/systemd/system/neoserv.service');
+        runCommand($rConn, 'sudo chmod +x /etc/systemd/system/neoserv.service');
+        runCommand($rConn, 'sudo rm /etc/init.d/neoserv');
         runCommand($rConn, 'sudo systemctl daemon-reload');
-        runCommand($rConn, 'sudo systemctl enable xc_vm');
+        runCommand($rConn, 'sudo systemctl enable neoserv');
         if ($rType == 1) {
-            runCommand($rConn, 'sudo rm /home/xc_vm/bin/nginx/conf/servers/*.conf');
+            runCommand($rConn, 'sudo rm /home/neoserv/bin/nginx/conf/servers/*.conf');
             $rServices = 1;
             foreach ($rParentIDs as $rParentID) {
                 if ($rPrivateIP) {
@@ -210,20 +210,20 @@ if ($argc && $argc >= 6) {
                 }
                 $rTmpPath = TMP_PATH . md5(time() . $rKey . '.conf');
                 file_put_contents($rTmpPath, $rConfigText);
-                sendfile($rConn, $rTmpPath, '/home/xc_vm/bin/nginx/conf/servers/' . intval($rParentID) . '.conf');
+                sendfile($rConn, $rTmpPath, '/home/neoserv/bin/nginx/conf/servers/' . intval($rParentID) . '.conf');
             }
-            runCommand($rConn, 'sudo echo "listen ' . $rHTTPPort . ';" > "/home/xc_vm/bin/nginx/conf/ports/http.conf"');
-            runCommand($rConn, 'sudo echo "listen ' . $rHTTPSPort . ' ssl;" > "/home/xc_vm/bin/nginx/conf/ports/https.conf"');
-            runCommand($rConn, 'sudo chmod 0777 /home/xc_vm/bin');
+            runCommand($rConn, 'sudo echo "listen ' . $rHTTPPort . ';" > "/home/neoserv/bin/nginx/conf/ports/http.conf"');
+            runCommand($rConn, 'sudo echo "listen ' . $rHTTPSPort . ' ssl;" > "/home/neoserv/bin/nginx/conf/ports/https.conf"');
+            runCommand($rConn, 'sudo chmod 0777 /home/neoserv/bin');
         } else {
             sendfile($rConn, MAIN_HOME . 'bin/nginx/conf/custom.conf', MAIN_HOME . 'bin/nginx/conf/custom.conf');
             sendfile($rConn, MAIN_HOME . 'bin/nginx/conf/realip_cdn.conf', MAIN_HOME . 'bin/nginx/conf/realip_cdn.conf');
             sendfile($rConn, MAIN_HOME . 'bin/nginx/conf/realip_cloudflare.conf', MAIN_HOME . 'bin/nginx/conf/realip_cloudflare.conf');
-            sendfile($rConn, MAIN_HOME . 'bin/nginx/conf/realip_xc_vm.conf', MAIN_HOME . 'bin/nginx/conf/realip_xc_vm.conf');
-            runCommand($rConn, 'sudo echo "" > "/home/xc_vm/bin/nginx/conf/limit.conf"');
-            runCommand($rConn, 'sudo echo "" > "/home/xc_vm/bin/nginx/conf/limit_queue.conf"');
+            sendfile($rConn, MAIN_HOME . 'bin/nginx/conf/realip_neoserv.conf', MAIN_HOME . 'bin/nginx/conf/realip_neoserv.conf');
+            runCommand($rConn, 'sudo echo "" > "/home/neoserv/bin/nginx/conf/limit.conf"');
+            runCommand($rConn, 'sudo echo "" > "/home/neoserv/bin/nginx/conf/limit_queue.conf"');
             $rIP = '127.0.0.1:' . CoreUtilities::$rServers[$rServerID]['http_broadcast_port'];
-            runCommand($rConn, 'sudo echo "on_play http://' . $rIP . '/stream/rtmp; on_publish http://' . $rIP . '/stream/rtmp; on_play_done http://' . $rIP . '/stream/rtmp;" > "/home/xc_vm/bin/nginx_rtmp/conf/live.conf"');
+            runCommand($rConn, 'sudo echo "on_play http://' . $rIP . '/stream/rtmp; on_publish http://' . $rIP . '/stream/rtmp; on_play_done http://' . $rIP . '/stream/rtmp;" > "/home/neoserv/bin/nginx_rtmp/conf/live.conf"');
             $rServices = (intval(runCommand($rConn, 'sudo cat /proc/cpuinfo | grep "^processor" | wc -l')['output']) ?: 4);
             runCommand($rConn, 'sudo rm ' . MAIN_HOME . 'bin/php/etc/*.conf');
             $rNewScript = '#! /bin/bash' . "\n";
@@ -261,18 +261,18 @@ if ($argc && $argc >= 6) {
         runCommand($rConn, 'sudo mount -a');
         runCommand($rConn, "sudo echo 'net.ipv4.ip_unprivileged_port_start=0' > /etc/sysctl.d/50-allports-nonroot.conf && sudo sysctl --system");
         sleep(3);
-        runCommand($rConn, 'sudo chown -R xc_vm:xc_vm ' . MAIN_HOME . 'tmp');
-        runCommand($rConn, 'sudo chown -R xc_vm:xc_vm ' . MAIN_HOME . 'content/streams');
-        runCommand($rConn, 'sudo chown -R xc_vm:xc_vm ' . MAIN_HOME);
+        runCommand($rConn, 'sudo chown -R neoserv:neoserv ' . MAIN_HOME . 'tmp');
+        runCommand($rConn, 'sudo chown -R neoserv:neoserv ' . MAIN_HOME . 'content/streams');
+        runCommand($rConn, 'sudo chown -R neoserv:neoserv ' . MAIN_HOME);
         CoreUtilities::grantPrivileges($rHost);
-        echo 'Installation complete! Starting XC_VM' . "\n";
-        runCommand($rConn, 'sudo service xc_vm restart');
+        echo 'Installation complete! Starting NeoServ' . "\n";
+        runCommand($rConn, 'sudo service neoserv restart');
         if ($rType == 2) {
             runCommand($rConn, 'sudo ' . MAIN_HOME . 'status 1');
-            runCommand($rConn, 'sudo -u xc_vm ' . PHP_BIN . ' ' . CLI_PATH . 'startup.php');
-            runCommand($rConn, 'sudo -u xc_vm ' . PHP_BIN . ' ' . CRON_PATH . 'servers.php');
+            runCommand($rConn, 'sudo -u neoserv ' . PHP_BIN . ' ' . CLI_PATH . 'startup.php');
+            runCommand($rConn, 'sudo -u neoserv ' . PHP_BIN . ' ' . CRON_PATH . 'servers.php');
         } else {
-            runCommand($rConn, 'sudo -u xc_vm ' . PHP_BIN . ' ' . INCLUDES_PATH . 'startup.php');
+            runCommand($rConn, 'sudo -u neoserv ' . PHP_BIN . ' ' . INCLUDES_PATH . 'startup.php');
         }
 
         if (in_array($rType, array(1, 2))) {
