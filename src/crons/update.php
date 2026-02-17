@@ -1,20 +1,20 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         if (isrunning()) {
-            $rConfig = parse_ini_string(file_get_contents('/home/xc_vm/config/config.ini'));
+            $rConfig = parse_ini_string(file_get_contents('/home/neoserv/config/config.ini'));
             if (!isset($rConfig['is_lb']) || !$rConfig['is_lb']) {
-                $rPort = (intval(explode(';', explode(' ', trim(explode('listen ', file_get_contents('/home/xc_vm/bin/nginx/conf/ports/http.conf'))[1]))[0])[0]) ?: 80);
+                $rPort = (intval(explode(';', explode(' ', trim(explode('listen ', file_get_contents('/home/neoserv/bin/nginx/conf/ports/http.conf'))[1]))[0])[0]) ?: 80);
             }
 
             require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
-            $rUpdate = $gitRelease->getUpdate(XC_VM_VERSION);
+            $rUpdate = $gitRelease->getUpdate(NeoServ_VERSION);
 
-            if (is_array($rUpdate) && $rUpdate['version'] && (0 < version_compare($rUpdate['version'], XC_VM_VERSION) || version_compare($rUpdate['version'], XC_VM_VERSION) == 0)) {
+            if (is_array($rUpdate) && $rUpdate['version'] && (0 < version_compare($rUpdate['version'], NeoServ_VERSION) || version_compare($rUpdate['version'], NeoServ_VERSION) == 0)) {
                 echo 'Update is available!' . "\n";
                 $updatedChanges = array();
                 foreach (array_reverse($rUpdate['changelog']) as $rItem) {
-                    if (!($rItem['version'] == XC_VM_VERSION)) {
+                    if (!($rItem['version'] == NeoServ_VERSION)) {
                         $updatedChanges[] = $rItem;
                     } else {
                         break;
@@ -30,11 +30,11 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 function isrunning() {
     $rNginx = 0;
-    exec('ps -fp $(pgrep -u xc_vm)', $rOutput, $rReturnVar);
+    exec('ps -fp $(pgrep -u neoserv)', $rOutput, $rReturnVar);
     foreach ($rOutput as $rProcess) {
         $rSplit = explode(' ', preg_replace('!\\s+!', ' ', trim($rProcess)));
         if ($rSplit[8] == 'nginx:' && $rSplit[9] == 'master') {
