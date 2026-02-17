@@ -1,12 +1,12 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc && $argc > 1) {
         $rStreamID = intval($argv[1]);
         require str_replace('\\', '/', dirname($argv[0])) . '/../../www/init.php';
         checkRunning($rStreamID);
         register_shutdown_function('shutdown');
         set_time_limit(0);
-        cli_set_process_title('XC_VMProxy[' . $rStreamID . ']');
+        cli_set_process_title('NeoServProxy[' . $rStreamID . ']');
         $db->query('SELECT * FROM `streams` t1 INNER JOIN `streams_servers` t2 ON t2.stream_id = t1.id AND t2.server_id = ? WHERE t1.id = ?', SERVER_ID, $rStreamID);
         if ($db->num_rows() > 0) {
             file_put_contents(STREAMS_PATH . $rStreamID . '_.monitor', getmypid());
@@ -32,7 +32,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 function checkRunning($rStreamID) {
     clearstatcache(true);
@@ -41,12 +41,12 @@ function checkRunning($rStreamID) {
         $rPID = intval(file_get_contents(STREAMS_PATH . $rStreamID . '_.monitor'));
     }
     if (empty($rPID)) {
-        shell_exec("kill -9 `ps -ef | grep 'XC_VMProxy\\[" . intval($rStreamID) . "\\]' | grep -v grep | awk '{print \$2}'`;");
+        shell_exec("kill -9 `ps -ef | grep 'NeoServProxy\\[" . intval($rStreamID) . "\\]' | grep -v grep | awk '{print \$2}'`;");
     } else {
         if (!file_exists('/proc/' . $rPID)) {
         } else {
             $rCommand = trim(file_get_contents('/proc/' . $rPID . '/cmdline'));
-            if (!($rCommand == 'XC_VMProxy[' . $rStreamID . ']' && is_numeric($rPID) && 0 < $rPID)) {
+            if (!($rCommand == 'NeoServProxy[' . $rStreamID . ']' && is_numeric($rPID) && 0 < $rPID)) {
             } else {
                 posix_kill($rPID, 9);
             }
@@ -73,7 +73,7 @@ function startProxy($rStreamID, $rStreamInfo, $rStreamArguments) {
     }
     if (!CoreUtilities::$rSettings['request_prebuffer']) {
     } else {
-        $rOptions['http']['header'] .= 'X-XC_VM-Prebuffer: 1' . "\r\n";
+        $rOptions['http']['header'] .= 'X-NeoServ-Prebuffer: 1' . "\r\n";
     }
     $rContext = stream_context_create($rOptions);
     $rURLs = json_decode($rStreamInfo['stream_source'], true);
