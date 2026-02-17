@@ -2,28 +2,6 @@
 
 /**
  * Mobile Detect Library
- * Motto: "Every business should have a mobile detection script to detect mobile readers"
- *
- * Mobile_Detect is a lightweight PHP class for detecting mobile devices (including tablets).
- * It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.
- *
- * Homepage: http://mobiledetect.net
- * GitHub: https://github.com/serbanghita/Mobile-Detect
- * README: https://github.com/serbanghita/Mobile-Detect/blob/master/README.md
- * CONTRIBUTING: https://github.com/serbanghita/Mobile-Detect/blob/master/docs/CONTRIBUTING.md
- * KNOWN LIMITATIONS: https://github.com/serbanghita/Mobile-Detect/blob/master/docs/KNOWN_LIMITATIONS.md
- * EXAMPLES: https://github.com/serbanghita/Mobile-Detect/wiki/Code-examples
- *
- * @license https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE
- * @author  Serban Ghita <serbanghita@gmail.com> (since 2012)
- * @author  Nick Ilyin <nick.ilyin@gmail.com>
- * @author: Victor Stanciu <vic.stanciu@gmail.com> (original author)
- *
- * @version 2.8.45
- *
- * Auto-generated isXXXX() magic methods.
- * php -a examples/dump_magic_methods.php
- *
  * @method bool isiPhone()
  * @method bool isBlackBerry()
  * @method bool isPixel()
