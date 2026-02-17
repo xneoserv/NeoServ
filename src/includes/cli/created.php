@@ -1,12 +1,12 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc && $argc > 1) {
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../../www/init.php';
         $rStreamID = intval($argv[1]);
         checkRunning($rStreamID);
         set_time_limit(0);
-        cli_set_process_title('XC_VMCreate[' . $rStreamID . ']');
+        cli_set_process_title('NeoServCreate[' . $rStreamID . ']');
 
         $db->query('SELECT * FROM `streams` t1 LEFT JOIN `profiles` t3 ON t1.transcode_profile_id = t3.profile_id WHERE t1.`id` = ?', $rStreamID);
         if ($db->num_rows() != 0) {
@@ -129,7 +129,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 
 function checkRunning($rStreamID) {
@@ -142,11 +142,11 @@ function checkRunning($rStreamID) {
     }
 
     if (empty($rPID)) {
-        shell_exec("kill -9 `ps -ef | grep 'XC_VMCreate\\[" . intval($rStreamID) . "\\]' | grep -v grep | awk '{print \$2}'`;");
+        shell_exec("kill -9 `ps -ef | grep 'NeoServCreate\\[" . intval($rStreamID) . "\\]' | grep -v grep | awk '{print \$2}'`;");
     } else {
         if (file_exists('/proc/' . $rPID)) {
             $rCommand = trim(file_get_contents('/proc/' . $rPID . '/cmdline'));
-            if ($rCommand == 'XC_VMCreate[' . $rStreamID . ']') {
+            if ($rCommand == 'NeoServCreate[' . $rStreamID . ']') {
                 posix_kill($rPID, 9);
             }
         }
