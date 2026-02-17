@@ -1,5 +1,5 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         set_time_limit(0);
         require str_replace('\\', '/', dirname($argv[0])) . '/../../www/init.php';
@@ -42,38 +42,38 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
                                 $rStreamSource = CoreUtilities::parseStreamURL($rSource);
                                 echo 'Checking source: ' . $rSource . "\n";
                                 $rURLInfo = parse_url($rStreamSource);
-                                $rIsXC_VM = CoreUtilities::detectXC_VM($rStreamSource);
-                                if (!($rIsXC_VM && CoreUtilities::$rSettings['send_xc_vm_header'])) {
+                                $rIsNeoServ = CoreUtilities::detectNeoServ($rStreamSource);
+                                if (!($rIsNeoServ && CoreUtilities::$rSettings['send_neoserv_header'])) {
                                 } else {
                                     foreach (array_keys($rStreamArguments) as $rID) {
                                         if ($rStreamArguments[$rID]['argument_key'] != 'headers') {
                                         } else {
-                                            $rStreamArguments[$rID]['value'] .= "\r\n" . 'X-XC_VM-Detect:1';
+                                            $rStreamArguments[$rID]['value'] .= "\r\n" . 'X-NeoServ-Detect:1';
                                             $rProcessed = true;
                                         }
                                     }
                                     if ($rProcessed) {
                                     } else {
-                                        $rStreamArguments[] = array('value' => 'X-XC_VM-Detect:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
+                                        $rStreamArguments[] = array('value' => 'X-NeoServ-Detect:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
                                     }
                                 }
-                                if (!($rIsXC_VM && CoreUtilities::$rSettings['request_prebuffer'] == 1)) {
+                                if (!($rIsNeoServ && CoreUtilities::$rSettings['request_prebuffer'] == 1)) {
                                 } else {
                                     foreach (array_keys($rStreamArguments) as $rID) {
                                         if ($rStreamArguments[$rID]['argument_key'] != 'headers') {
                                         } else {
-                                            $rStreamArguments[$rID]['value'] .= "\r\n" . 'X-XC_VM-Prebuffer:1';
+                                            $rStreamArguments[$rID]['value'] .= "\r\n" . 'X-NeoServ-Prebuffer:1';
                                             $rProcessed = true;
                                         }
                                     }
                                     if ($rProcessed) {
                                     } else {
-                                        $rStreamArguments[] = array('value' => 'X-XC_VM-Prebuffer:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
+                                        $rStreamArguments[] = array('value' => 'X-NeoServ-Prebuffer:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
                                     }
                                 }
                                 $rProtocol = strtolower(substr($rStreamSource, 0, strpos($rStreamSource, '://')));
                                 $rFetchOptions = implode(' ', CoreUtilities::getArguments($rStreamArguments, $rProtocol, 'fetch'));
-                                if (!($rIsXC_VM && CoreUtilities::$rSettings['api_probe'])) {
+                                if (!($rIsNeoServ && CoreUtilities::$rSettings['api_probe'])) {
                                 } else {
                                     $rProbeURL = $rURLInfo['scheme'] . '://' . $rURLInfo['host'] . ':' . $rURLInfo['port'] . '/probe/' . base64_encode($rURLInfo['path']);
                                     $rTime = round(microtime(true) * 1000);
@@ -157,5 +157,5 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
