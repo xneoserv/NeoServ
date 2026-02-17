@@ -1,9 +1,9 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
-        cli_set_process_title('XC_VM[Live Checker]');
+        cli_set_process_title('NeoServ[Live Checker]');
         $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
         CoreUtilities::checkCron($rIdentifier);
         loadCron();
@@ -11,12 +11,12 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 function loadCron() {
     global $db;
     if (!CoreUtilities::isRunning()) {
-        echo 'XC_VM not running...' . "\n";
+        echo 'NeoServ not running...' . "\n";
     }
     if (CoreUtilities::$rSettings['redis_handler']) {
         CoreUtilities::connectRedis();
@@ -194,15 +194,15 @@ function loadCron() {
     }
     $db->query('SELECT `stream_id` FROM `streams_servers` WHERE `on_demand` = 1 AND `server_id` = ?;', SERVER_ID);
     $rOnDemandIDs = array_keys($db->get_rows(true, 'stream_id'));
-    $rProcesses = shell_exec('ps aux | grep XC_VM');
-    if (!preg_match_all('/XC_VM\\[(.*)\\]/', $rProcesses, $rMatches)) {
+    $rProcesses = shell_exec('ps aux | grep NeoServ');
+    if (!preg_match_all('/NeoServ\\[(.*)\\]/', $rProcesses, $rMatches)) {
     } else {
         $rRemove = array_diff($rMatches[1], $rStreamIDs);
         $rRemove = array_diff($rRemove, $rOnDemandIDs);
         foreach ($rRemove as $rStreamID) {
             if (is_numeric($rStreamID)) {
                 echo 'Kill Stream ID: ' . $rStreamID . "\n";
-                shell_exec("kill -9 `ps -ef | grep '/" . intval($rStreamID) . '_.m3u8\\|XC_VM\\[' . intval($rStreamID) . "\\]' | grep -v grep | awk '{print \$2}'`;");
+                shell_exec("kill -9 `ps -ef | grep '/" . intval($rStreamID) . '_.m3u8\\|NeoServ\\[' . intval($rStreamID) . "\\]' | grep -v grep | awk '{print \$2}'`;");
                 shell_exec('rm -f ' . STREAMS_PATH . intval($rStreamID) . '_*');
             }
         }
