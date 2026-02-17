@@ -2,7 +2,7 @@
 ini_set('memory_limit', -1);
 setlocale(LC_ALL, 'en_US.UTF-8');
 putenv('LC_ALL=en_US.UTF-8');
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
@@ -25,7 +25,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
             }
         }
         file_put_contents(CACHE_TMP_PATH . 'plex_pid', getmypid());
-        cli_set_process_title('XC_VM[Plex Sync]');
+        cli_set_process_title('NeoServ[Plex Sync]');
         $rScanOffset = (intval(CoreUtilities::$rSettings['scan_seconds']) ?: 3600);
         set_time_limit(0);
         if (!empty(CoreUtilities::$rSettings['tmdb_api_key'])) {
@@ -37,7 +37,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 class Thread {
     public $process = null;
