@@ -1,5 +1,5 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] === 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] === 'neoserv') {
     if ($argc && $argc > 3) {
         $rStreamID = intval($argv[1]);
         $rStreamSources = json_decode(base64_decode($argv[2]), true);
@@ -16,7 +16,7 @@ if (posix_getpwuid(posix_geteuid())['name'] === 'xc_vm') {
         echo "Stream arguments count: " . count($rStreamArguments) . "\n";
         echo "====================\n\n";
 
-        define('MAIN_HOME', '/home/xc_vm/');
+        define('MAIN_HOME', '/home/neoserv/');
         define('STREAMS_PATH', MAIN_HOME . 'content/streams/');
         define('INCLUDES_PATH', MAIN_HOME . 'includes/');
         define('CACHE_TMP_PATH', MAIN_HOME . 'tmp/cache/');
@@ -78,7 +78,7 @@ if (posix_getpwuid(posix_geteuid())['name'] === 'xc_vm') {
     }
 } else {
 
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 
 function deleteOldSegments($rStreamID, $rKeep, $rThreshold, &$rSegmentStatus) {
