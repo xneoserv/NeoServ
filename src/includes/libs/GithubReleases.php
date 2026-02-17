@@ -3,14 +3,14 @@
 /**
  * GitHubReleases PHP class - wrapper for GitHub Releases API
  *
- * @package VateronMedia_GitHubReleases
- * @author Divarion_D <https://github.com/Divarion-D>
- * @copyright 2025 Vateron Media
- * @link https://github.com/Vateron-Media/XC_VM
+ * @package NeoServ_GitHubReleases
+ * @author NeoServ <https://github.com/xneoserv-D>
+ * @copyright 2026 NeoServ
+ * @link https://github.com/xneoserv/NeoServ
  * @version 0.1.0
  * @license AGPL-3.0 https://www.gnu.org/licenses/agpl-3.0.html
  *
- * A PHP class created specifically for the XC_VM project to interact with the GitHub Releases API.
+ * A PHP class created specifically for the NeoServ project to interact with the GitHub Releases API.
  * Provides methods to fetch release versions, changelogs, asset hashes, and GeoLite database information
  * with caching support.
  */
@@ -21,7 +21,7 @@ class GitHubReleases {
     private $api_url;
     private $headers;
     private $timeout = 5; // Request timeout in seconds
-    private $cache_file = '/home/xc_vm/tmp/gitapi'; // Cache file path
+    private $cache_file = '/home/neoserv/tmp/gitapi'; // Cache file path
     private string $channel = 'stable'; // 'stable' или 'unstable'
     private $hash_file = 'hashes.md5';
     private $cache_ttl = 1800; // Cache TTL in seconds (30 minutes)
@@ -313,7 +313,7 @@ class GitHubReleases {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Vateron-Media/XC_VM');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Vateron-Media/NeoServ');
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 
@@ -445,7 +445,7 @@ class GitHubReleases {
             // Add file information to the list
             $data_files[] = [
                 "fileurl"   => $file_url,                                // Remote file URL
-                "path"      => "/home/xc_vm/bin/maxmind/{$file}",        // Local path where the file should be stored
+                "path"      => "/home/neoserv/bin/maxmind/{$file}",        // Local path where the file should be stored
                 "permission" => "0750",                                   // File permission
                 "md5"       => $hash_md5                                // File hash (MD5)
             ];
@@ -519,7 +519,7 @@ class GitHubReleases {
  * ------------------------------------------------------------
  * 🔧 Инициализация:
  *
- *   $gh = new GitHubReleases("Vateron-Media", "XC_VM", 'stable');
+ *   $gh = new GitHubReleases("Vateron-Media", "NeoServ", 'stable');
  *   // Можно передать токен для увеличения лимита API:
  *   // $gh = new GitHubReleases("owner", "repo", "ghp_XXXXXXX");
  *
@@ -545,7 +545,7 @@ class GitHubReleases {
  * ------------------------------------------------------------
  * 4. Загрузить changelog:
  *
- *   $changelog = $gh->getChangelog("https://raw.githubusercontent.com/Vateron-Media/XC_VM_Update/refs/heads/main/changelog.json");
+ *   $changelog = $gh->getChangelog("https://raw.githubusercontent.com/Vateron-Media/NeoServ_Update/refs/heads/main/changelog.json");
  *   print_r($changelog);
  *
  * ------------------------------------------------------------
@@ -569,12 +569,12 @@ class GitHubReleases {
  * ------------------------------------------------------------
  * 8. Получить информацию о GeoLite базах:
  *
- *   $gh = new GitHubReleases("Vateron-Media", "XC_VM_Update");
+ *   $gh = new GitHubReleases("Vateron-Media", "NeoServ_Update");
  *   $geo = $gh->getGeolite();
  *   print_r($geo);
  *
  * ------------------------------------------------------------
  * ⚠️ Важно:
- * - Кеш хранится в /home/xc_vm/tmp/gitapi_repo
+ * - Кеш хранится в /home/neoserv/tmp/gitapi_repo
  * - TTL кеша: 30 минут (1800 сек)
  */
