@@ -1,10 +1,10 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         require str_replace('\\', '/', dirname($argv[0])) . '/../includes/admin.php';
         require INCLUDES_PATH . 'libs/tmdb.php';
         require INCLUDES_PATH . 'libs/tmdb_release.php';
-        cli_set_process_title('XC_VM[TMDB]');
+        cli_set_process_title('NeoServ[TMDB]');
         $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
         CoreUtilities::checkCron($rIdentifier);
         $rCategories = getCategories();
@@ -446,5 +446,5 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
