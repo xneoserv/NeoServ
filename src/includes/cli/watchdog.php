@@ -1,6 +1,6 @@
 <?php
 echo "Start watchdog\n";
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         require str_replace('\\', '/', dirname($argv[0])) . '/../../www/init.php';
 
@@ -72,7 +72,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
             }
             $rStats['cpu_average_array'] = $rCPUAverage;
             $rPHPPIDs = array();
-            exec("ps -u xc_vm | grep php-fpm | awk {'print \$1'}", $rPHPPIDs);
+            exec("ps -u neoserv | grep php-fpm | awk {'print \$1'}", $rPHPPIDs);
             $rConnections = $rUsers = 0;
             if (!CoreUtilities::$rSettings['redis_handler']) {
                 $db->query('SELECT COUNT(*) AS `count` FROM `lines_live` WHERE `hls_end` = 0 AND `server_id` = ?;', SERVER_ID);
@@ -126,5 +126,5 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
