@@ -1,7 +1,7 @@
 <?php
 if (defined('MAIN_HOME')) {
 } else {
-    define('MAIN_HOME', '/home/xc_vm/');
+    define('MAIN_HOME', '/home/neoserv/');
 }
 require_once MAIN_HOME . 'includes/admin.php';
 $_ERRORS = array();
