@@ -301,8 +301,8 @@ function shutdown() {
 }
 
 
-if (posix_getpwuid(posix_geteuid())['name'] != 'xc_vm') {
-	exit('Please run as XC_VM!' . "\n");
+if (posix_getpwuid(posix_geteuid())['name'] != 'neoserv') {
+	exit('Please run as NeoServ!' . "\n");
 }
 
 if (!@$argc) {
@@ -314,7 +314,7 @@ if (count($argv) == 2) {
 	$rEPGID = intval($argv[1]);
 }
 
-print_log("=== XC_VM[EPG] Process started ===");
+print_log("=== NeoServ[EPG] Process started ===");
 print_log("Mode: " . ($rEPGID ? "Single EPG ID: $rEPGID" : "Full update"));
 
 set_time_limit(0);
@@ -323,8 +323,8 @@ register_shutdown_function('shutdown');
 require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
 require INCLUDES_PATH . 'libs/XmlStringStreamer.php';
 
-shell_exec('kill -9 `ps -ef | grep \'XC_VM\\[EPG\\]\' | grep -v grep | awk \'{print $2}\'`;');
-cli_set_process_title('XC_VM[EPG]');
+shell_exec('kill -9 `ps -ef | grep \'NeoServ\\[EPG\\]\' | grep -v grep | awk \'{print $2}\'`;');
+cli_set_process_title('NeoServ[EPG]');
 
 if (CoreUtilities::$rSettings['force_epg_timezone']) {
 	date_default_timezone_set('UTC');
@@ -558,3 +558,4 @@ foreach (scandir(EPG_PATH) as $rFile) {
 print_log("[CLEANUP] Deleted $deleted old cache files");
 
 print_log("=== EPG processing completed successfully! ===");
+
