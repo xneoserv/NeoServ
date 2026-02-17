@@ -1206,7 +1206,7 @@ class StreamingUtilities {
 
 			if ($procExists && is_readable('/proc/' . $rPID . '/exe') && strpos(basename(@readlink('/proc/' . $rPID . '/exe')), basename($rEXE)) === 0) {
 				$rCommand = trim(file_get_contents('/proc/' . $rPID . '/cmdline'));
-				if (!($rCommand == 'XC_VM[' . $rStreamID . ']' || $rCommand == 'XC_VMProxy[' . $rStreamID . ']')) {
+				if (!($rCommand == 'NeoServ[' . $rStreamID . ']' || $rCommand == 'NeoServProxy[' . $rStreamID . ']')) {
 				} else {
 					return true;
 				}
@@ -1365,7 +1365,7 @@ class StreamingUtilities {
 	}
 	public static function isRunning() {
 		$rNginx = 0;
-		exec('ps -fp $(pgrep -u xc_vm)', $rOutput, $rReturnVar);
+		exec('ps -fp $(pgrep -u neoserv)', $rOutput, $rReturnVar);
 		foreach ($rOutput as $rProcess) {
 			$rSplit = explode(' ', preg_replace('!\\s+!', ' ', trim($rProcess)));
 			if (!($rSplit[8] == 'nginx:' && $rSplit[9] == 'master')) {
