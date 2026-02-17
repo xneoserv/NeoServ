@@ -1,5 +1,5 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc && $argc > 1) {
         $rStreamID = intval($argv[1]);
         $rDelayDuration = 0;
@@ -7,13 +7,13 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         require str_replace('\\', '/', dirname($argv[0])) . '/../../www/init.php';
         checkRunning($rStreamID);
         set_time_limit(0);
-        cli_set_process_title('XC_VMDelay[' . $rStreamID . ']');
+        cli_set_process_title('NeoServDelay[' . $rStreamID . ']');
         loadcli();
     } else {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 function cleanUpSegments() {
     global $rStreamID;
@@ -93,12 +93,12 @@ function checkRunning($rStreamID) {
         $rPID = intval(file_get_contents(STREAMS_PATH . $rStreamID . '_.monitor_delay'));
     }
     if (empty($rPID)) {
-        shell_exec("kill -9 `ps -ef | grep 'XC_VMDelay\\[" . intval($rStreamID) . "\\]' | grep -v grep | awk '{print \$2}'`;");
+        shell_exec("kill -9 `ps -ef | grep 'NeoServDelay\\[" . intval($rStreamID) . "\\]' | grep -v grep | awk '{print \$2}'`;");
     } else {
         if (!file_exists('/proc/' . $rPID)) {
         } else {
             $rCommand = trim(file_get_contents('/proc/' . $rPID . '/cmdline'));
-            if (!($rCommand == 'XC_VMDelay[' . $rStreamID . ']' && is_numeric($rPID) && 0 < $rPID)) {
+            if (!($rCommand == 'NeoServDelay[' . $rStreamID . ']' && is_numeric($rPID) && 0 < $rPID)) {
             } else {
                 posix_kill($rPID, 9);
             }
