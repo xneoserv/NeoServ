@@ -1,20 +1,5 @@
 <?php
 
-/**
- * Translator PHP class - multilingual support system with auto-key generation
- *
- * @package VateronMedia_Translator
- * @author Divarion_D <https://github.com/Divarion-D>
- * @copyright 2025 Vateron Media
- * @link https://github.com/Vateron-Media/XC_VM
- * @version 1.0.0
- * @license AGPL-3.0 https://www.gnu.org/licenses/agpl-3.0.html
- *
- * A PHP class created specifically for the XC_VM project to provide multilingual support.
- * Features automatic translation key generation, INI file management, language switching,
- * and missing key auto-creation with file locking for concurrent access.
- */
-
 class Translator {
     /** @var array<string, string> Currently loaded translations */
     private static array $translations = [];
@@ -163,18 +148,6 @@ class Translator {
     }
 }
 
-
-
-
-// // At the beginning of the application (once)
-// Translator::init('/path/to/your/lang/'); // or just Translator::init(); if lang folder is nearby
-
-// // Anywhere in the code
-// echo Translator::get('welcome_title');
-// echo Translator::get('users_online', [':count' => 153]);
-
-// // Change language
-// Translator::setLanguage('de');
 
 // // Utility methods
 // echo Translator::current();     // → "de"
