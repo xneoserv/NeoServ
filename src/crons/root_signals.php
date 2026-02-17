@@ -9,11 +9,11 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
         require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
         $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
         CoreUtilities::checkCron($rIdentifier);
-        $pids = shell_exec("pgrep -f 'XC_VM\[Signals\]'");
+        $pids = shell_exec("pgrep -f 'NeoServ\[Signals\]'");
         if (!empty($pids)) {
             shell_exec("sudo kill -9 $pids");
         }
-        cli_set_process_title('XC_VM[Signals]');
+        cli_set_process_title('NeoServ[Signals]');
         file_put_contents(CONFIG_PATH . 'signals.last', time());
         $rSaveIPTables = false;
         loadCron();
@@ -220,21 +220,21 @@ function loadCron() {
     }
     $rReload = false;
     $rAllowedIPs = CoreUtilities::getAllowedIPs();
-    $rXC_VMList = array();
+    $rNeoServList = array();
     foreach ($rAllowedIPs as $rIP) {
         if (!empty($rIP) && filter_var($rIP, FILTER_VALIDATE_IP)) {
             $newEntry = 'set_real_ip_from ' . $rIP . ';';
 
-            if (!in_array($newEntry, $rXC_VMList)) {
-                $rXC_VMList[] = $newEntry;
+            if (!in_array($newEntry, $rNeoServList)) {
+                $rNeoServList[] = $newEntry;
             }
         }
     }
-    $rXC_VMList = trim(implode("\n", array_unique($rXC_VMList)));
-    $rCurrentList = (trim(file_get_contents(BIN_PATH . 'nginx/conf/realip_xc_vm.conf')) ?: '');
-    if ($rXC_VMList != $rCurrentList) {
-        echo 'Updating XC_VM IP List...' . "\n";
-        file_put_contents(BIN_PATH . 'nginx/conf/realip_xc_vm.conf', $rXC_VMList);
+    $rNeoServList = trim(implode("\n", array_unique($rNeoServList)));
+    $rCurrentList = (trim(file_get_contents(BIN_PATH . 'nginx/conf/realip_neoserv.conf')) ?: '');
+    if ($rNeoServList != $rCurrentList) {
+        echo 'Updating NeoServ IP List...' . "\n";
+        file_put_contents(BIN_PATH . 'nginx/conf/realip_neoserv.conf', $rNeoServList);
         $rReload = true;
     }
     $rCurrentList = (trim(file_get_contents(BIN_PATH . 'nginx/conf/realip_cloudflare.conf')) ?: '');
@@ -307,8 +307,8 @@ function loadCron() {
     }
     if (CoreUtilities::$rSettings['restart_php_fpm']) {
         $rPHP = $rNginx = 0;
-        // exec('ps -fp $(pgrep -u xc_vm)', $rOutput, $rReturnVar);
-        exec('ps -fp ' . trim(shell_exec('pgrep -u xc_vm | tr "\n" "," | sed "s/,$//"')), $rOutput, $rReturnVar);
+        // exec('ps -fp $(pgrep -u neoserv)', $rOutput, $rReturnVar);
+        exec('ps -fp ' . trim(shell_exec('pgrep -u neoserv | tr "\n" "," | sed "s/,$//"')), $rOutput, $rReturnVar);
         foreach ($rOutput as $rProcess) {
             $rSplit = explode(' ', preg_replace('!\\s+!', ' ', trim($rProcess)));
             if ($rSplit[8] == 'php-fpm:' && $rSplit[9] == 'master') {
@@ -322,8 +322,8 @@ function loadCron() {
             if ($rPHP == 0) {
                 echo 'PHP-FPM ERROR - Restarting...';
                 $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'PHP-FPM', 'Restarted PHP-FPM instances due to a suspected crash.', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
-                shell_exec('sudo systemctl stop xc_vm');
-                shell_exec('sudo systemctl start xc_vm');
+                shell_exec('sudo systemctl stop neoserv');
+                shell_exec('sudo systemctl start neoserv');
                 exit();
             }
         }
@@ -336,8 +336,8 @@ function loadCron() {
         } else {
             echo $rCode . ' ERROR - Restarting...';
             $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'PHP-FPM', 'Restarted services due to " . $rCode . " error.', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
-            shell_exec('sudo systemctl stop xc_vm');
-            shell_exec('sudo systemctl start xc_vm');
+            shell_exec('sudo systemctl stop neoserv');
+            shell_exec('sudo systemctl start neoserv');
             exit();
         }
     }
@@ -433,13 +433,13 @@ function loadCron() {
         }
         if (file_exists(TMP_PATH . 'crontab')) {
             echo 'Checking crontab...' . "\n";
-            exec('crontab -u xc_vm -l', $rCrons);
+            exec('crontab -u neoserv -l', $rCrons);
             $rCurrentCron = trim(implode("\n", $rCrons));
             $db->query('SELECT * FROM `crontab` WHERE `enabled` = 1;');
             foreach ($db->get_rows() as $rRow) {
                 $rFullPath = CRON_PATH . $rRow['filename'];
                 if (pathinfo($rFullPath, PATHINFO_EXTENSION) == 'php' && file_exists($rFullPath)) {
-                    $rJobs[] = $rRow['time'] . ' ' . PHP_BIN . ' ' . $rFullPath . ' # XC_VM';
+                    $rJobs[] = $rRow['time'] . ' ' . PHP_BIN . ' ' . $rFullPath . ' # NeoServ';
                 }
             }
             $rActualCron = trim(implode("\n", $rJobs));
@@ -451,10 +451,10 @@ function loadCron() {
             }
         }
         if (file_exists(CONFIG_PATH . 'sysctl.on')) {
-            if (strtoupper(substr(explode("\n", file_get_contents('/etc/sysctl.conf'))[0], 0, 9)) != '# XC_VM') {
+            if (strtoupper(substr(explode("\n", file_get_contents('/etc/sysctl.conf'))[0], 0, 9)) != '# NeoServ') {
                 echo 'Sysctl missing! Writing it.' . "\n";
                 exec('sudo modprobe ip_conntrack');
-                file_put_contents('/etc/sysctl.conf', implode(PHP_EOL, array('# XC_VM', '', 'net.core.somaxconn = 655350', 'net.ipv4.route.flush=1', 'net.ipv4.tcp_no_metrics_save=1', 'net.ipv4.tcp_moderate_rcvbuf = 1', 'fs.file-max = 6815744', 'fs.aio-max-nr = 6815744', 'fs.nr_open = 6815744', 'net.ipv4.ip_local_port_range = 1024 65000', 'net.ipv4.tcp_sack = 1', 'net.ipv4.tcp_rmem = 10000000 10000000 10000000', 'net.ipv4.tcp_wmem = 10000000 10000000 10000000', 'net.ipv4.tcp_mem = 10000000 10000000 10000000', 'net.core.rmem_max = 524287', 'net.core.wmem_max = 524287', 'net.core.rmem_default = 524287', 'net.core.wmem_default = 524287', 'net.core.optmem_max = 524287', 'net.core.netdev_max_backlog = 300000', 'net.ipv4.tcp_max_syn_backlog = 300000', 'net.netfilter.nf_conntrack_max=1215196608', 'net.ipv4.tcp_window_scaling = 1', 'vm.max_map_count = 655300', 'net.ipv4.tcp_max_tw_buckets = 50000', 'net.ipv6.conf.all.disable_ipv6 = 1', 'net.ipv6.conf.default.disable_ipv6 = 1', 'net.ipv6.conf.lo.disable_ipv6 = 1', 'kernel.shmmax=134217728', 'kernel.shmall=134217728', 'vm.overcommit_memory = 1', 'net.ipv4.tcp_tw_reuse=1')));
+                file_put_contents('/etc/sysctl.conf', implode(PHP_EOL, array('# NeoServ', '', 'net.core.somaxconn = 655350', 'net.ipv4.route.flush=1', 'net.ipv4.tcp_no_metrics_save=1', 'net.ipv4.tcp_moderate_rcvbuf = 1', 'fs.file-max = 6815744', 'fs.aio-max-nr = 6815744', 'fs.nr_open = 6815744', 'net.ipv4.ip_local_port_range = 1024 65000', 'net.ipv4.tcp_sack = 1', 'net.ipv4.tcp_rmem = 10000000 10000000 10000000', 'net.ipv4.tcp_wmem = 10000000 10000000 10000000', 'net.ipv4.tcp_mem = 10000000 10000000 10000000', 'net.core.rmem_max = 524287', 'net.core.wmem_max = 524287', 'net.core.rmem_default = 524287', 'net.core.wmem_default = 524287', 'net.core.optmem_max = 524287', 'net.core.netdev_max_backlog = 300000', 'net.ipv4.tcp_max_syn_backlog = 300000', 'net.netfilter.nf_conntrack_max=1215196608', 'net.ipv4.tcp_window_scaling = 1', 'vm.max_map_count = 655300', 'net.ipv4.tcp_max_tw_buckets = 50000', 'net.ipv6.conf.all.disable_ipv6 = 1', 'net.ipv6.conf.default.disable_ipv6 = 1', 'net.ipv6.conf.lo.disable_ipv6 = 1', 'kernel.shmmax=134217728', 'kernel.shmall=134217728', 'vm.overcommit_memory = 1', 'net.ipv4.tcp_tw_reuse=1')));
                 exec('sudo sysctl -p > /dev/null');
             }
         }
@@ -473,14 +473,14 @@ function loadCron() {
                         break;
                     case 'restart_services':
                         echo 'Restarting services...' . "\n";
-                        $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'RESTART', 'XC_VM services restarted on request.', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
-                        shell_exec('sudo systemctl stop xc_vm');
-                        shell_exec('sudo systemctl start xc_vm');
+                        $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'RESTART', 'NeoServ services restarted on request.', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
+                        shell_exec('sudo systemctl stop neoserv');
+                        shell_exec('sudo systemctl start neoserv');
                         break;
                     case 'stop_services':
                         echo 'Stopping services...' . "\n";
-                        $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'STOP', 'XC_VM services stopped on request.', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
-                        shell_exec('sudo systemctl stop xc_vm');
+                        $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'STOP', 'NeoServ services stopped on request.', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
+                        shell_exec('sudo systemctl stop neoserv');
                         break;
                     case 'reload_nginx':
                         echo 'Reloading nginx...' . "\n";
@@ -493,28 +493,28 @@ function loadCron() {
                         $rFstab = file_get_contents('/etc/fstab');
                         $rOutput = array();
                         foreach (explode("\n", $rFstab) as $rLine) {
-                            if (substr($rLine, 0, 31) == 'tmpfs /home/xc_vm/content/streams') {
+                            if (substr($rLine, 0, 31) == 'tmpfs /home/neoserv/content/streams') {
                                 $rLine = '#' . $rLine;
                             }
                             $rOutput[] = $rLine;
                         }
                         file_put_contents('/etc/fstab', implode("\n", $rOutput));
                         shell_exec('sudo umount -l ' . STREAMS_PATH);
-                        shell_exec('sudo chown -R xc_vm:xc_vm ' . STREAMS_PATH);
+                        shell_exec('sudo chown -R neoserv:neoserv ' . STREAMS_PATH);
                         break;
                     case 'enable_ramdisk':
                         echo 'Enabling ramdisk...' . "\n";
                         $rFstab = file_get_contents('/etc/fstab');
                         $rOutput = array();
                         foreach (explode("\n", $rFstab) as $rLine) {
-                            if (substr($rLine, 0, 32) == '#tmpfs /home/xc_vm/content/streams') {
+                            if (substr($rLine, 0, 32) == '#tmpfs /home/neoserv/content/streams') {
                                 $rLine = ltrim($rLine, '#');
                             }
                             $rOutput[] = $rLine;
                         }
                         file_put_contents('/etc/fstab', implode("\n", $rOutput));
                         shell_exec('sudo mount ' . STREAMS_PATH);
-                        shell_exec('sudo chown -R xc_vm:xc_vm ' . STREAMS_PATH);
+                        shell_exec('sudo chown -R neoserv:neoserv ' . STREAMS_PATH);
                         break;
                     case 'certbot_generate':
                         echo 'Generating certbot certificate.' . "\n";
@@ -523,12 +523,12 @@ function loadCron() {
                         break;
                     case 'update_binaries':
                         echo 'Updating binaries...' . "\n";
-                        $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'BINARIES', 'Updating XC_VM binaries from XC_VM server...', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
+                        $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'BINARIES', 'Updating NeoServ binaries from NeoServ server...', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
                         shell_exec('sudo ' . PHP_BIN . ' ' . INCLUDES_PATH . 'cli/binaries.php 2>&1 &');
                         break;
                     case 'update':
                         echo 'Updating...' . "\n";
-                        $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'UPDATE', 'Updating XC_VM...', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
+                        $db->query("INSERT INTO `mysql_syslog`(`server_id`, `type`, `error`, `username`, `ip`, `database`, `date`) VALUES(?, 'UPDATE', 'Updating NeoServ...', 'root', 'localhost', NULL, ?);", SERVER_ID, time());
                         shell_exec('sudo ' . PHP_BIN . ' ' . INCLUDES_PATH . 'cli/update.php "update" 2>&1 &');
                         break;
                     case 'enable_ministra':
@@ -545,7 +545,7 @@ function loadCron() {
                         echo 'Setting PHP Services' . "\n";
                         $rServices = intval($rData['count']);
                         if ($rData['reload']) {
-                            shell_exec('sudo systemctl stop xc_vm');
+                            shell_exec('sudo systemctl stop neoserv');
                         }
                         shell_exec('sudo rm ' . MAIN_HOME . 'bin/php/etc/*.conf');
                         $rNewScript = '#! /bin/bash' . "\n";
@@ -558,9 +558,9 @@ function loadCron() {
                         }
                         file_put_contents(MAIN_HOME . 'bin/daemons.sh', $rNewScript);
                         file_put_contents(MAIN_HOME . 'bin/nginx/conf/balance.conf', $rNewBalance . '}');
-                        shell_exec('sudo chown xc_vm:xc_vm ' . MAIN_HOME . 'bin/php/etc/*');
+                        shell_exec('sudo chown neoserv:neoserv ' . MAIN_HOME . 'bin/php/etc/*');
                         if ($rData['reload']) {
-                            shell_exec('sudo systemctl start xc_vm');
+                            shell_exec('sudo systemctl start neoserv');
                         }
                         break;
                     case 'set_governor':
