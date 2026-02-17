@@ -2,8 +2,8 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(32757);
-if (posix_getpwuid(posix_geteuid())['name'] != 'xc_vm') {
-    exit('Please run as XC_VM!' . "\n");
+if (posix_getpwuid(posix_geteuid())['name'] != 'neoserv') {
+    exit('Please run as NeoServ!' . "\n");
 }
 
 set_time_limit(0);
@@ -15,7 +15,7 @@ require str_replace('\\', '/', dirname($argv[0])) . '/../includes/admin.php';
 if (!CoreUtilities::$rServers[SERVER_ID]['is_main']) {
     exit('Please run on main server.');
 }
-cli_set_process_title('XC_VM[Backups]');
+cli_set_process_title('NeoServ[Backups]');
 $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
 CoreUtilities::checkCron($rIdentifier);
 $rForce = false;
