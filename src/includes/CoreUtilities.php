@@ -1125,7 +1125,7 @@ class CoreUtilities {
 									$rDeviceInfo['device_header'] = str_replace('#EXTM3U', '#EXTM3U x-tvg-url="' . $epgUrl . '"', $rDeviceInfo['device_header']);
 								}
 
-								$rAppend = ($isM3UFormat ? "\n" . '#EXT-X-SESSION-DATA:DATA-ID="com.xc_vm.' . str_replace('.', '_', XC_VM_VERSION) . '"' : '');
+								$rAppend = ($isM3UFormat ? "\n" . '#EXT-X-SESSION-DATA:DATA-ID="com.neoserv.' . str_replace('.', '_', NeoServ_VERSION) . '"' : '');
 								$rData = str_replace(array('&lt;', '&gt;'), array('<', '>'), str_replace(array('{BOUQUET_NAME}', '{USERNAME}', '{PASSWORD}', '{SERVER_URL}', '{OUTPUT_KEY}'), array(self::$rSettings['server_name'], $rUserInfo['username'], $rUserInfo['password'], $rDomainName, $rOutputKey), $rDeviceInfo['device_header'] . $rAppend)) . "\n";
 								if ($rOutputFile) {
 									fwrite($rOutputFile, $rData);
@@ -1164,7 +1164,7 @@ class CoreUtilities {
 													$rConfig = str_replace('tvg-id="{CHANNEL_ID}" ', '', $rConfig);
 												}
 												if (!$rEncryptPlaylist) {
-													$rConfig = str_replace('xc_vm-id="{XC_VM_ID}" ', '', $rConfig);
+													$rConfig = str_replace('neoserv-id="{NeoServ_ID}" ', '', $rConfig);
 												}
 												if (0 < $rChannel['tv_archive_server_id'] && 0 < $rChannel['tv_archive_duration']) {
 													$rConfig = str_replace('#EXTINF:-1 ', '#EXTINF:-1 timeshift="' . intval($rChannel['tv_archive_duration']) . '" ', $rConfig);
@@ -1258,9 +1258,9 @@ class CoreUtilities {
 
 											foreach ($rCategoryIDs as $rCategoryID) {
 												if (isset(self::$rCategories[$rCategoryID])) {
-													$rData = str_replace(array('&lt;', '&gt;'), array('<', '>'), str_replace(array($rPattern, '{ESR_ID}', '{SID}', '{CHANNEL_NAME}', '{CHANNEL_ID}', '{XC_VM_ID}', '{CATEGORY}', '{CHANNEL_ICON}'), array(str_replace($rCharts, array_map('urlencode', $rCharts), $rURL), $rESRID, $rSID, $rChannel['stream_display_name'], $rChannel['channel_id'], $rChannel['id'], self::$rCategories[$rCategoryID]['category_name'], self::validateImage($rIcon)), $rConfig)) . "\r\n";
+													$rData = str_replace(array('&lt;', '&gt;'), array('<', '>'), str_replace(array($rPattern, '{ESR_ID}', '{SID}', '{CHANNEL_NAME}', '{CHANNEL_ID}', '{NeoServ_ID}', '{CATEGORY}', '{CHANNEL_ICON}'), array(str_replace($rCharts, array_map('urlencode', $rCharts), $rURL), $rESRID, $rSID, $rChannel['stream_display_name'], $rChannel['channel_id'], $rChannel['id'], self::$rCategories[$rCategoryID]['category_name'], self::validateImage($rIcon)), $rConfig)) . "\r\n";
 												} else {
-													$rData = str_replace(array('&lt;', '&gt;'), array('<', '>'), str_replace(array($rPattern, '{ESR_ID}', '{SID}', '{CHANNEL_NAME}', '{CHANNEL_ID}', '{XC_VM_ID}', '{CHANNEL_ICON}'), array(str_replace($rCharts, array_map('urlencode', $rCharts), $rURL), $rESRID, $rSID, $rChannel['stream_display_name'], $rChannel['channel_id'], $rChannel['id'], $rIcon), $rConfig)) . "\r\n";
+													$rData = str_replace(array('&lt;', '&gt;'), array('<', '>'), str_replace(array($rPattern, '{ESR_ID}', '{SID}', '{CHANNEL_NAME}', '{CHANNEL_ID}', '{NeoServ_ID}', '{CHANNEL_ICON}'), array(str_replace($rCharts, array_map('urlencode', $rCharts), $rURL), $rESRID, $rSID, $rChannel['stream_display_name'], $rChannel['channel_id'], $rChannel['id'], $rIcon), $rConfig)) . "\r\n";
 													$rData = str_replace(' group-title="{CATEGORY}"', "", $rData);
 												}
 												if ($rOutputFile) {
@@ -1319,7 +1319,7 @@ class CoreUtilities {
 			foreach (self::$db->get_rows() as $rRow) {
 				$rFullPath = CRON_PATH . $rRow['filename'];
 				if (pathinfo($rFullPath, PATHINFO_EXTENSION) == 'php' && file_exists($rFullPath)) {
-					$rJobs[] = $rRow['time'] . ' ' . PHP_BIN . ' ' . $rFullPath . ' # XC_VM';
+					$rJobs[] = $rRow['time'] . ' ' . PHP_BIN . ' ' . $rFullPath . ' # NeoServ';
 				}
 			}
 			shell_exec('crontab -r');
@@ -1327,7 +1327,7 @@ class CoreUtilities {
 			$rHandle = fopen($rTempName, 'w');
 			fwrite($rHandle, implode("\n", $rJobs) . "\n");
 			fclose($rHandle);
-			shell_exec('crontab -u xc_vm ' . $rTempName);
+			shell_exec('crontab -u neoserv ' . $rTempName);
 			@unlink($rTempName);
 			file_put_contents(TMP_PATH . 'crontab', 1);
 			return true;
@@ -1646,7 +1646,7 @@ class CoreUtilities {
 		}
 		if (0 >= $rMonitor) {
 		} else {
-			if (!(self::checkPID($rMonitor, array('XC_VM[' . $rStreamID . ']', 'XC_VMProxy[' . $rStreamID . ']')) && is_numeric($rMonitor) && 0 < $rMonitor)) {
+			if (!(self::checkPID($rMonitor, array('NeoServ[' . $rStreamID . ']', 'NeoServProxy[' . $rStreamID . ']')) && is_numeric($rMonitor) && 0 < $rMonitor)) {
 			} else {
 				posix_kill($rMonitor, 9);
 			}
@@ -1659,7 +1659,7 @@ class CoreUtilities {
 		}
 		if (0 >= $rPID) {
 		} else {
-			if (!(self::checkPID($rPID, array($rStreamID . '_.m3u8', $rStreamID . '_%d.ts', 'LLOD[' . $rStreamID . ']', 'XC_VMProxy[' . $rStreamID . ']', 'Loopback[' . $rStreamID . ']')) && is_numeric($rPID) && 0 < $rPID)) {
+			if (!(self::checkPID($rPID, array($rStreamID . '_.m3u8', $rStreamID . '_%d.ts', 'LLOD[' . $rStreamID . ']', 'NeoServProxy[' . $rStreamID . ']', 'Loopback[' . $rStreamID . ']')) && is_numeric($rPID) && 0 < $rPID)) {
 			} else {
 				posix_kill($rPID, 9);
 			}
@@ -2150,45 +2150,45 @@ class CoreUtilities {
 					$rStreamSource = self::parseStreamURL($rSource);
 					echo 'Checking source: ' . $rSource . "\n";
 					$rURLInfo = parse_url($rStreamSource);
-					$rIsXC_VM = ($rLoopback ? true : self::detectXC_VM($rStreamSource));
+					$rIsNeoServ = ($rLoopback ? true : self::detectNeoServ($rStreamSource));
 
-					if ($rIsXC_VM && !$rLoopback && self::$rSettings['send_xc_vm_header']) {
+					if ($rIsNeoServ && !$rLoopback && self::$rSettings['send_neoserv_header']) {
 						foreach (array_keys($rStream['stream_arguments']) as $rID) {
 							if ($rStream['stream_arguments'][$rID]['argument_key'] == 'headers') {
-								$rStream['stream_arguments'][$rID]['value'] .= "\r\n" . 'X-XC_VM-Detect:1';
+								$rStream['stream_arguments'][$rID]['value'] .= "\r\n" . 'X-NeoServ-Detect:1';
 								$rProcessed = true;
 							}
 						}
 
 						if (!$rProcessed) {
-							$rStream['stream_arguments'][] = array('value' => 'X-XC_VM-Detect:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
+							$rStream['stream_arguments'][] = array('value' => 'X-NeoServ-Detect:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
 						}
 					}
 
 					$rProbeArguments = $rStream['stream_arguments'];
 
-					if ($rIsXC_VM && $rStream['server_info']['on_demand'] == 1 && self::$rSettings['request_prebuffer'] == 1) {
+					if ($rIsNeoServ && $rStream['server_info']['on_demand'] == 1 && self::$rSettings['request_prebuffer'] == 1) {
 						foreach (array_keys($rStream['stream_arguments']) as $rID) {
 							if ($rStream['stream_arguments'][$rID]['argument_key'] == 'headers') {
-								$rStream['stream_arguments'][$rID]['value'] .= "\r\n" . 'X-XC_VM-Prebuffer:1';
+								$rStream['stream_arguments'][$rID]['value'] .= "\r\n" . 'X-NeoServ-Prebuffer:1';
 								$rProcessed = true;
 							}
 						}
 
 						if (!$rProcessed) {
-							$rStream['stream_arguments'][] = array('value' => 'X-XC_VM-Prebuffer:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
+							$rStream['stream_arguments'][] = array('value' => 'X-NeoServ-Prebuffer:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
 						}
 					}
 
 					foreach (array_keys($rProbeArguments) as $rID) {
 						if ($rProbeArguments[$rID]['argument_key'] == 'headers') {
-							$rProbeArguments[$rID]['value'] .= "\r\n" . 'X-XC_VM-Prebuffer:1';
+							$rProbeArguments[$rID]['value'] .= "\r\n" . 'X-NeoServ-Prebuffer:1';
 							$rProcessed = true;
 						}
 					}
 
 					if (!$rProcessed) {
-						$rProbeArguments[] = array('value' => 'X-XC_VM-Prebuffer:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
+						$rProbeArguments[] = array('value' => 'X-NeoServ-Prebuffer:1', 'argument_key' => 'headers', 'argument_cat' => 'fetch', 'argument_wprotocol' => 'http', 'argument_type' => 'text', 'argument_cmd' => "-headers '%s" . "\r\n" . "'");
 					}
 
 					$rProtocol = strtolower(substr($rStreamSource, 0, strpos($rStreamSource, '://')));
@@ -2214,7 +2214,7 @@ class CoreUtilities {
 							),
 							'container' => 'mpegts'
 						);
-						error_log('[XC_VM] Stream ' . $rStreamID . ': FFProbe skipped');
+						error_log('[NeoServ] Stream ' . $rStreamID . ': FFProbe skipped');
 						echo 'Got stream information via skip_ffprobe (assumed h264/aac)' . "\n";
 
 						// Ensure $rSource is defined for cache after the loop
@@ -2240,7 +2240,7 @@ class CoreUtilities {
 					}
 
 					if (!($rStream['server_info']['on_demand'] && $rLLOD)) {
-						if ($rIsXC_VM && self::$rSettings['api_probe']) {
+						if ($rIsNeoServ && self::$rSettings['api_probe']) {
 							$rProbeURL = $rURLInfo['scheme'] . '://' . $rURLInfo['host'] . ':' . $rURLInfo['port'] . '/probe/' . base64_encode($rURLInfo['path']);
 							$rFFProbeOutput = json_decode(self::getURL($rProbeURL), true);
 
@@ -2638,7 +2638,7 @@ class CoreUtilities {
 		}
 		return $rURL;
 	}
-	public static function detectXC_VM($rURL) {
+	public static function detectNeoServ($rURL) {
 		$rPath = parse_url($rURL)['path'];
 		$rPathSize = count(explode('/', $rPath));
 		$rRegex = array('/\\/auth\\/(.*)$/m' => 3, '/\\/play\\/(.*)$/m' => 3, '/\\/play\\/(.*)\\/(.*)$/m' => 4, '/\\/live\\/(.*)\\/(\\d+)$/m' => 4, '/\\/live\\/(.*)\\/(\\d+)\\.(.*)$/m' => 4, '/\\/(.*)\\/(.*)\\/(\\d+)\\.(.*)$/m' => 4, '/\\/(.*)\\/(.*)\\/(\\d+)$/m' => 4, '/\\/live\\/(.*)\\/(.*)\\/(\\d+)\\.(.*)$/m' => 5, '/\\/live\\/(.*)\\/(.*)\\/(\\d+)$/m' => 5);
@@ -3118,7 +3118,7 @@ class CoreUtilities {
 			if (!(file_exists('/proc/' . $rPID) && is_readable('/proc/' . $rPID . '/exe') && strpos(basename(readlink('/proc/' . $rPID . '/exe')), basename($rEXE)) === 0)) {
 			} else {
 				$rCommand = trim(file_get_contents('/proc/' . $rPID . '/cmdline'));
-				if (!($rCommand == 'XC_VM[' . $rStreamID . ']' || $rCommand == 'XC_VMProxy[' . $rStreamID . ']')) {
+				if (!($rCommand == 'NeoServ[' . $rStreamID . ']' || $rCommand == 'NeoServProxy[' . $rStreamID . ']')) {
 				} else {
 					return true;
 				}
@@ -3171,7 +3171,7 @@ class CoreUtilities {
 
 			if ($procExists && is_readable('/proc/' . $rPID . '/exe')) {
 				$rCommand = trim(@file_get_contents('/proc/' . $rPID . '/cmdline'));
-				if ($rCommand == 'XC_VMDelay[' . $rStreamID . ']') {
+				if ($rCommand == 'NeoServDelay[' . $rStreamID . ']') {
 					return true;
 				}
 			}
@@ -3367,7 +3367,7 @@ class CoreUtilities {
 	}
 	public static function isRunning() {
 		$rNginx = 0;
-		exec('ps -fp $(pgrep -u xc_vm)', $rOutput, $rReturnVar);
+		exec('ps -fp $(pgrep -u neoserv)', $rOutput, $rReturnVar);
 		foreach ($rOutput as $rProcess) {
 			$rSplit = explode(' ', preg_replace('!\\s+!', ' ', trim($rProcess)));
 			if ($rSplit[8] == 'nginx:' && $rSplit[9] == 'master') {
@@ -3570,7 +3570,7 @@ class CoreUtilities {
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 3);
 		curl_setopt($ch, CURLOPT_URL, $rURL);
-		curl_setopt($ch, CURLOPT_USERAGENT, 'XC_VM/' . XC_VM_VERSION);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'NeoServ/' . NeoServ_VERSION);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, $rWait);
 		$rReturn = curl_exec($ch);
 		curl_close($ch);
@@ -4400,7 +4400,7 @@ class CoreUtilities {
 		// Return structured data with version info
 		return [
 			'errors' => $errors,
-			'version' => defined('XC_VM_VERSION') ? XC_VM_VERSION : 'unknown'
+			'version' => defined('NeoServ_VERSION') ? NeoServ_VERSION : 'unknown'
 		];
 	}
 
@@ -4424,7 +4424,7 @@ class CoreUtilities {
 
 		$rData = [
 			'errors'  => self::$db->get_rows(),
-			'version' => XC_VM_VERSION
+			'version' => NeoServ_VERSION
 		];
 
 		$payload = json_encode($rData, JSON_UNESCAPED_UNICODE);
@@ -4470,7 +4470,7 @@ class CoreUtilities {
 	}
 
 	public static function getApiIP() {
-		$url = 'https://raw.githubusercontent.com/Vateron-Media/XC_VM_Update/refs/heads/main/api_server.json';
+		$url = 'https://raw.githubusercontent.com/xneoserv/NeoServ_Update/refs/heads/main/api_server.json';
 
 		// Get the JSON content from the URL
 		$json = file_get_contents($url);
@@ -4600,14 +4600,14 @@ class CoreUtilities {
 
 	public static function createBackup($Filename) {
 		shell_exec("mysqldump -h 127.0.0.1 -u " . self::$rConfig['username'] . " -p" . self::$rConfig['password'] . " -P " . self::$rConfig['port'] . " --no-data " . self::$rConfig['database'] . " > \"" . $Filename . "\"");
-		shell_exec("mysqldump -h 127.0.0.1 -u " . self::$rConfig['username'] . " -p" . self::$rConfig['password'] . " -P " . self::$rConfig['port'] . " --no-create-info --ignore-table xc_vm.detect_restream_logs --ignore-table xc_vm.epg_data --ignore-table xc_vm.lines_activity --ignore-table xc_vm.lines_live --ignore-table xc_vm.lines_logs --ignore-table xc_vm.login_logs --ignore-table xc_vm.mag_claims --ignore-table xc_vm.mag_logs --ignore-table xc_vm.mysql_syslog --ignore-table xc_vm.panel_logs --ignore-table xc_vm.panel_stats --ignore-table xc_vm.servers_stats --ignore-table xc_vm.signals --ignore-table xc_vm.streams_errors --ignore-table xc_vm.streams_logs --ignore-table xc_vm.streams_stats --ignore-table xc_vm.syskill_log --ignore-table xc_vm.users_credits_logs --ignore-table xc_vm.users_logs --ignore-table xc_vm.watch_logs " . self::$rConfig['database'] . " >> \"" . $Filename . "\"");
+		shell_exec("mysqldump -h 127.0.0.1 -u " . self::$rConfig['username'] . " -p" . self::$rConfig['password'] . " -P " . self::$rConfig['port'] . " --no-create-info --ignore-table neoserv.detect_restream_logs --ignore-table neoserv.epg_data --ignore-table neoserv.lines_activity --ignore-table neoserv.lines_live --ignore-table neoserv.lines_logs --ignore-table neoserv.login_logs --ignore-table neoserv.mag_claims --ignore-table neoserv.mag_logs --ignore-table neoserv.mysql_syslog --ignore-table neoserv.panel_logs --ignore-table neoserv.panel_stats --ignore-table neoserv.servers_stats --ignore-table neoserv.signals --ignore-table neoserv.streams_errors --ignore-table neoserv.streams_logs --ignore-table neoserv.streams_stats --ignore-table neoserv.syskill_log --ignore-table neoserv.users_credits_logs --ignore-table neoserv.users_logs --ignore-table neoserv.watch_logs " . self::$rConfig['database'] . " >> \"" . $Filename . "\"");
 	}
 
 	public static function restoreBackup($Filename) {
-		shell_exec("mysql -u " . self::$rConfig['username'] . " -p" . self::$rConfig['password'] . " -P " . self::$rConfig['port'] . " " . self::$rConfig['database'] . " -e \"DROP DATABASE IF EXISTS xc_vm; CREATE DATABASE IF NOT EXISTS xc_vm;\"");
+		shell_exec("mysql -u " . self::$rConfig['username'] . " -p" . self::$rConfig['password'] . " -P " . self::$rConfig['port'] . " " . self::$rConfig['database'] . " -e \"DROP DATABASE IF EXISTS neoserv; CREATE DATABASE IF NOT EXISTS neoserv;\"");
 		shell_exec("mysql -u " . self::$rConfig['username'] . " -p" . self::$rConfig['password'] . " -P " . self::$rConfig['port'] . " " . self::$rConfig['database'] . " < \"" . $Filename . "\" > /dev/null 2>/dev/null &");
 		shell_exec("mysqldump -h 127.0.0.1 -u " . self::$rConfig['username'] . " -p" . self::$rConfig['password'] . " -P " . self::$rConfig['port'] . " --no-data " . self::$rConfig['database'] . " > \"" . $Filename . "\"");
-		shell_exec("mysqldump -h 127.0.0.1 -u " . self::$rConfig['username'] . " -p" . self::$rConfig['password'] . " -P " . self::$rConfig['port'] . " --no-create-info --ignore-table xc_vm.detect_restream_logs --ignore-table xc_vm.epg_data --ignore-table xc_vm.lines_activity --ignore-table xc_vm.lines_live --ignore-table xc_vm.lines_logs --ignore-table xc_vm.login_logs --ignore-table xc_vm.mag_claims --ignore-table xc_vm.mag_logs --ignore-table xc_vm.mysql_syslog --ignore-table xc_vm.panel_logs --ignore-table xc_vm.panel_stats --ignore-table xc_vm.servers_stats --ignore-table xc_vm.signals --ignore-table xc_vm.streams_errors --ignore-table xc_vm.streams_logs --ignore-table xc_vm.streams_stats --ignore-table xc_vm.syskill_log --ignore-table xc_vm.users_credits_logs --ignore-table xc_vm.users_logs --ignore-table xc_vm.watch_logs " . self::$rConfig['database'] . " >> \"" . $Filename . "\"");
+		shell_exec("mysqldump -h 127.0.0.1 -u " . self::$rConfig['username'] . " -p" . self::$rConfig['password'] . " -P " . self::$rConfig['port'] . " --no-create-info --ignore-table neoserv.detect_restream_logs --ignore-table neoserv.epg_data --ignore-table neoserv.lines_activity --ignore-table neoserv.lines_live --ignore-table neoserv.lines_logs --ignore-table neoserv.login_logs --ignore-table neoserv.mag_claims --ignore-table neoserv.mag_logs --ignore-table neoserv.mysql_syslog --ignore-table neoserv.panel_logs --ignore-table neoserv.panel_stats --ignore-table neoserv.servers_stats --ignore-table neoserv.signals --ignore-table neoserv.streams_errors --ignore-table neoserv.streams_logs --ignore-table neoserv.streams_stats --ignore-table neoserv.syskill_log --ignore-table neoserv.users_credits_logs --ignore-table neoserv.users_logs --ignore-table neoserv.watch_logs " . self::$rConfig['database'] . " >> \"" . $Filename . "\"");
 	}
 
 	public static function grantPrivileges($Host) {
@@ -4760,8 +4760,8 @@ class CoreUtilities {
 		$headers = [
 			'Content-Type: application/xml; charset=utf-8',
 			'X-Plex-Client-Identifier: 526e163c-8dbd-11eb-8dcd-0242ac130003',
-			'X-Plex-Product: XC_VM',
-			'X-Plex-Version: v' . XC_VM_VERSION
+			'X-Plex-Product: NeoServ',
+			'X-Plex-Version: v' . NeoServ_VERSION
 		];
 
 		$ch = curl_init('https://plex.tv/users/sign_in.json');
