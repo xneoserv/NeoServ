@@ -1,5 +1,5 @@
 location ^~ /#CODE# {
-    alias /home/xc_vm/#TYPE#;
+    alias /home/neoserv/#TYPE#;
     index index.php index.html index.htm;
     try_files $uri $uri.html $uri/ @extensionless-php;
     #WHITELIST#
@@ -17,4 +17,5 @@ location ^~ /#CODE# {
         fastcgi_param SCRIPT_FILENAME $request_filename;
         fastcgi_param SCRIPT_NAME $fastcgi_script_name;
     }
+
 }
