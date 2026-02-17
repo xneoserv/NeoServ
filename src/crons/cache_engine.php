@@ -1,5 +1,5 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         $rPID = getmypid();
         register_shutdown_function('shutdown');
@@ -36,7 +36,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 class Thread {
     public $process = null;
@@ -392,7 +392,7 @@ function loadCron($rType, $rGroupStart, $rGroupMax) {
             exit();
         }
     } else {
-        echo 'XC_VM not running...' . "\n";
+        echo 'NeoServ not running...' . "\n";
         exit();
     }
 }
