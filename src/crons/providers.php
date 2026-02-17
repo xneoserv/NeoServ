@@ -1,5 +1,5 @@
 <?php
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     if ($argc) {
         $rProviderID = null;
         if (1 >= count($argv)) {
@@ -8,7 +8,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         }
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
-        cli_set_process_title('XC_VM[Providers]');
+        cli_set_process_title('NeoServ[Providers]');
         $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
         CoreUtilities::checkCron($rIdentifier);
         $rTimeout = 300;
@@ -19,7 +19,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 function readURL($rURL) {
     $rContext = stream_context_create(array('http' => array('timeout' => 30)));
