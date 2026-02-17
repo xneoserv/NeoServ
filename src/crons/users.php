@@ -2,14 +2,14 @@
 
 // Checked
 
-if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
+if (posix_getpwuid(posix_geteuid())['name'] == 'neoserv') {
     set_time_limit(0);
     ini_set('memory_limit', -1);
 
     if ($argc) {
         register_shutdown_function('shutdown');
         require str_replace('\\', '/', dirname($argv[0])) . '/../www/init.php';
-        cli_set_process_title('XC_VM[Users]');
+        cli_set_process_title('NeoServ[Users]');
         $rIdentifier = CRONS_TMP_PATH . md5(CoreUtilities::generateUniqueCode() . __FILE__);
         CoreUtilities::checkCron($rIdentifier);
         $rSync = null;
@@ -101,7 +101,7 @@ if (posix_getpwuid(posix_geteuid())['name'] == 'xc_vm') {
         exit(0);
     }
 } else {
-    exit('Please run as XC_VM!' . "\n");
+    exit('Please run as NeoServ!' . "\n");
 }
 
 function processDeletions($rDelete, $rDelStream = array()) {
