@@ -56,7 +56,7 @@ define('STATUS_CERTBOT_RUNNING', 45);
 define('STATUS_RESERVED_CODE', 46);
 define('STATUS_NO_TITLE', 47);
 define('STATUS_NO_SOURCE', 48);
-require_once '/home/xc_vm/www/constants.php';
+require_once '/home/neoserv/www/constants.php';
 require_once INCLUDES_PATH . 'Database.php';
 require_once INCLUDES_PATH . 'CoreUtilities.php';
 require_once INCLUDES_PATH . 'libs/mobiledetect.php';
@@ -248,7 +248,7 @@ function getFreeSpace($rServerID) {
 	foreach ($rLines as $rLine) {
 		$rSplit = explode(' ', preg_replace('!\\s+!', ' ', trim($rLine)));
 
-		if (0 < strlen($rSplit[0]) && strpos($rSplit[5], 'xc_vm') !== false || $rSplit[5] == '/') {
+		if (0 < strlen($rSplit[0]) && strpos($rSplit[5], 'neoserv') !== false || $rSplit[5] == '/') {
 			$rReturn[] = array('filesystem' => $rSplit[0], 'size' => $rSplit[1], 'used' => $rSplit[2], 'avail' => $rSplit[3], 'percentage' => $rSplit[4], 'mount' => implode(' ', array_slice($rSplit, 5, count($rSplit) - 5)));
 		}
 	}
@@ -1931,7 +1931,7 @@ function getTickets($rID = null, $rAdmin = false) {
 	return $rReturn;
 }
 
-function cryptPassword($rPassword, $rSalt = 'xc_vm', $rRounds = 20000) {
+function cryptPassword($rPassword, $rSalt = 'neoserv', $rRounds = 20000) {
 	if ($rSalt != '') {
 	} else {
 		$rSalt = substr(bin2hex(openssl_random_pseudo_bytes(16)), 0, 16);
@@ -2124,7 +2124,7 @@ function getPIDs($rServerID) {
 	foreach ($rProcesses as $rProcess) {
 		$rSplit = explode(' ', preg_replace('!\\s+!', ' ', trim($rProcess)));
 
-		if ($rSplit[0] == 'xc_vm') {
+		if ($rSplit[0] == 'neoserv') {
 			$rUsage = array(0, 0, 0);
 			$rTimer = explode('-', $rSplit[9]);
 
@@ -3891,7 +3891,7 @@ function checksource($rServerID, $rFilename) {
 }
 
 function getSSLLog($rServerID) {
-	$rAPI = CoreUtilities::$rServers[intval($rServerID)]['api_url_ip'] . '&action=getFile&filename=' . urlencode(BIN_PATH . 'certbot/logs/xc_vm.log');
+	$rAPI = CoreUtilities::$rServers[intval($rServerID)]['api_url_ip'] . '&action=getFile&filename=' . urlencode(BIN_PATH . 'certbot/logs/neoserv.log');
 
 	return json_decode(file_get_contents($rAPI), true);
 }
@@ -4263,7 +4263,7 @@ function getRegisteredUsers($rOwner = null, $rIncludeSelf = true) {
 }
 
 function getFooter() {
-	return "&copy; 2025 <img height='20px' style='padding-left: 10px; padding-right: 10px; margin-top: -2px;' src='./assets/images/logo-topbar.png' /> v" . XC_VM_VERSION;
+	return "&copy; 2025 <img height='20px' style='padding-left: 10px; padding-right: 10px; margin-top: -2px;' src='./assets/images/logo-topbar.png' /> v" . NeoServ_VERSION;
 }
 
 function scanBouquets() {
