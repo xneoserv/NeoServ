@@ -7,7 +7,7 @@ if ($argc) {
             $rFixCron = true;
         }
     }
-    define('MAIN_HOME', '/home/xc_vm/');
+    define('MAIN_HOME', '/home/neoserv/');
     require MAIN_HOME . 'www/stream/init.php';
 
     ini_set('display_errors', 1);
@@ -30,17 +30,17 @@ if ($argc) {
         $rNewBalance .= '}';
         file_put_contents(MAIN_HOME . 'bin/daemons.sh', $rNewScript);
         exec('chmod 0771 ' . MAIN_HOME . 'bin/daemons.sh');
-        exec('sudo chown xc_vm:xc_vm ' . MAIN_HOME . 'bin/daemons.sh');
-        exec('sudo chown xc_vm:xc_vm ' . MAIN_HOME . 'bin/php/etc/*');
+        exec('sudo chown neoserv:neoserv ' . MAIN_HOME . 'bin/daemons.sh');
+        exec('sudo chown neoserv:neoserv ' . MAIN_HOME . 'bin/php/etc/*');
         file_put_contents(MAIN_HOME . 'bin/nginx/conf/balance.conf', $rNewBalance);
     }
     if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
         $rCrons = array();
         if (file_exists(CRON_PATH . 'root_signals.php')) {
-            $rCrons[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_signals.php # XC_VM';
+            $rCrons[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_signals.php # NeoServ';
         }
         if (file_exists(CRON_PATH . 'root_mysql.php')) {
-            $rCrons[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_mysql.php # XC_VM';
+            $rCrons[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_mysql.php # NeoServ';
         }
         $rWrite = false;
         exec('sudo crontab -l', $rOutput);
@@ -62,10 +62,10 @@ if ($argc) {
             echo 'Crontab already installed' . "\n";
         }
         if (!$rFixCron) {
-            exec('sudo -u xc_vm ' . PHP_BIN . ' ' . CRON_PATH . 'cache.php 1', $rOutput);
+            exec('sudo -u neoserv ' . PHP_BIN . ' ' . CRON_PATH . 'cache.php 1', $rOutput);
             if (file_exists(CRON_PATH . 'cache_engine.php') || !file_exists(CACHE_TMP_PATH . 'cache_complete')) {
                 echo 'Generating cache...' . "\n";
-                exec('sudo -u xc_vm ' . PHP_BIN . ' ' . CRON_PATH . 'cache_engine.php >/dev/null 2>/dev/null &');
+                exec('sudo -u neoserv ' . PHP_BIN . ' ' . CRON_PATH . 'cache_engine.php >/dev/null 2>/dev/null &');
             }
         }
     } else {
